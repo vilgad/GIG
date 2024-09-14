@@ -2,6 +2,8 @@ package com.snippet.gig.entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table
 public class User {
@@ -16,6 +18,17 @@ public class User {
     private String email;
     private String password;
     private String role;
+
+    @ManyToMany(
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
+            fetch = FetchType.LAZY
+    )
+    @JoinTable(
+            name = "user_task",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "task_id")
+    )
+    private List<Task> tasks;
 
     // Constructors
     public User() {
@@ -33,6 +46,14 @@ public class User {
     // Getters and setters
     public Long getId() {
         return id;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
     }
 
     public String getName() {
@@ -93,6 +114,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", role='" + role + '\'' +
+                ", tasks=" + tasks +
                 '}';
     }
 }

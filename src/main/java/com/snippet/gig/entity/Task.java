@@ -21,7 +21,11 @@ public class Task {
     private String priority;
     private String status;
 
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = false)
+    @ManyToMany(
+            mappedBy = "task",
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
+            fetch = FetchType.LAZY
+    )
     private List<User> users;
 
 
