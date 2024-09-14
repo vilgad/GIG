@@ -1,4 +1,4 @@
-package com.snippet.gig.service;
+package com.snippet.gig.service.task;
 
 import com.snippet.gig.entity.Project;
 import com.snippet.gig.entity.Task;

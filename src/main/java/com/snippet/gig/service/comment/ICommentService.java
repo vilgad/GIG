@@ -1,4 +1,4 @@
-package com.snippet.gig.service;
+package com.snippet.gig.service.comment;
 
 public interface ICommentService {
 //    TODO(Implement Comment Service)
