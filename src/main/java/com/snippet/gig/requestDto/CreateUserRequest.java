@@ -1,62 +1,24 @@
-package com.snippet.gig.entity;
+package com.snippet.gig.requestDto;
 
-import jakarta.persistence.*;
 import org.hibernate.annotations.NaturalId;
 
-import java.util.List;
+import java.util.Objects;
 
-@Entity
-@Table
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
-
+public class CreateUserRequest {
     private String name;
     private String dob;
-    @NaturalId
     private String username;
-    @NaturalId
     private String email;
     private String password;
     private String role;
 
-    @ManyToMany(
-            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
-            fetch = FetchType.LAZY
-    )
-    @JoinTable(
-            name = "user_task",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "task_id")
-    )
-    private List<Task> tasks;
-
-    // Constructors
-    public User() {
-    }
-
-    public User(String name, String dob, String username, String email, String password, String role) {
+    public CreateUserRequest(String name, String dob, String username, String email, String password, String role) {
         this.name = name;
         this.dob = dob;
         this.username = username;
         this.email = email;
         this.password = password;
         this.role = role;
-    }
-
-    // Getters and setters
-    public Long getId() {
-        return id;
-    }
-
-    public List<Task> getTasks() {
-        return tasks;
-    }
-
-    public void setTasks(List<Task> tasks) {
-        this.tasks = tasks;
     }
 
     public String getName() {
@@ -108,16 +70,27 @@ public class User {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CreateUserRequest that = (CreateUserRequest) o;
+        return Objects.equals(name, that.name) && Objects.equals(dob, that.dob) && Objects.equals(username, that.username) && Objects.equals(email, that.email) && Objects.equals(password, that.password) && Objects.equals(role, that.role);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, dob, username, email, password, role);
+    }
+
+    @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
+        return "CreateUserRequest{" +
+                "name='" + name + '\'' +
                 ", dob='" + dob + '\'' +
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", role='" + role + '\'' +
-                ", tasks=" + tasks +
                 '}';
     }
 }

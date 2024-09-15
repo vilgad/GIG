@@ -22,7 +22,7 @@ public class Task {
     private String status;
 
     @ManyToMany(
-            mappedBy = "task",
+            mappedBy = "tasks",
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
             fetch = FetchType.LAZY
     )

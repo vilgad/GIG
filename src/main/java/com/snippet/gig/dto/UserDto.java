@@ -1,62 +1,41 @@
-package com.snippet.gig.entity;
+package com.snippet.gig.dto;
 
-import jakarta.persistence.*;
-import org.hibernate.annotations.NaturalId;
+import com.snippet.gig.entity.Task;
 
 import java.util.List;
+import java.util.Objects;
 
-@Entity
-@Table
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+public class UserDto {
+    // both args and no arg constructor is necessary
     private Long id;
-
     private String name;
     private String dob;
-    @NaturalId
     private String username;
-    @NaturalId
     private String email;
     private String password;
     private String role;
-
-    @ManyToMany(
-            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
-            fetch = FetchType.LAZY
-    )
-    @JoinTable(
-            name = "user_task",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "task_id")
-    )
     private List<Task> tasks;
 
-    // Constructors
-    public User() {
+    public UserDto() {
     }
 
-    public User(String name, String dob, String username, String email, String password, String role) {
+    public UserDto(Long id, String name, String dob, String username, String email, String password, String role, List<Task> tasks) {
+        this.id = id;
         this.name = name;
         this.dob = dob;
         this.username = username;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.tasks = tasks;
     }
 
-    // Getters and setters
     public Long getId() {
         return id;
     }
 
-    public List<Task> getTasks() {
-        return tasks;
-    }
-
-    public void setTasks(List<Task> tasks) {
-        this.tasks = tasks;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -107,9 +86,30 @@ public class User {
         this.role = role;
     }
 
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserDto userDto = (UserDto) o;
+        return Objects.equals(id, userDto.id) && Objects.equals(name, userDto.name) && Objects.equals(dob, userDto.dob) && Objects.equals(username, userDto.username) && Objects.equals(email, userDto.email) && Objects.equals(password, userDto.password) && Objects.equals(role, userDto.role) && Objects.equals(tasks, userDto.tasks);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, dob, username, email, password, role, tasks);
+    }
+
     @Override
     public String toString() {
-        return "User{" +
+        return "UserDto{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", dob='" + dob + '\'' +
