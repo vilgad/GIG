@@ -8,13 +8,17 @@ import com.snippet.gig.exception.ResourceNotFoundException;
 import com.snippet.gig.repository.UserRepository;
 import com.snippet.gig.requestDto.CreateUserRequest;
 import com.snippet.gig.requestDto.UpdateUserRequest;
+import com.snippet.gig.response.ApiResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
+
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
 public class UserService implements IUserService{
@@ -66,48 +70,70 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public User getUserByEmail(String email) {
-        return null;
+    public User getUserByEmail(String email) throws ResourceNotFoundException {
+        User user = userRepository.findByEmail(email);
+        return Optional.ofNullable(user)
+                .orElseThrow(() -> new ResourceNotFoundException("User with this email not present"));
     }
 
     @Override
-    public User getUserByUsername(String username) {
-        return null;
+    public User getUserByUsername(String username) throws ResourceNotFoundException {
+        User user = userRepository.findByUsername(username);
+        return Optional.ofNullable(user)
+                .orElseThrow(() -> new ResourceNotFoundException("User with username:" + username +  " not present"));
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<User> getAllUsers() throws ResourceNotFoundException {
+        List<User> users = userRepository.findAll();
+
+        if (users.isEmpty()) {
+            throw new ResourceNotFoundException("No Users Found");
+        }
+
+        return users;
     }
 
     @Override
-    public List<User> getUsersByRole(String role) {
-        return List.of();
+    public List<User> getUsersByRole(String role) throws ResourceNotFoundException {
+        List<User> users = userRepository.findByRole(role);
+
+        if (users.isEmpty()) {
+            throw new ResourceNotFoundException("No Users Found");
+        }
+
+        return users;
     }
 
     @Override
-    public List<Task> getUserTasks(Long id, String email, String username) {
-        return List.of();
+    public List<Task> getUserTasks(Long id) throws ResourceNotFoundException {
+        Optional<User> user = userRepository.findById(id);
+
+        if (user.isPresent()) {
+            return user.get().getTasks();
+        } else {
+            throw new ResourceNotFoundException("User Not Found");
+        }
     }
 
     @Override
-    public void updateUserRole(Long id, String username, String email, String role) {
-
+    public void updateUserRole(Long id, String role) {
+        // TODO()
     }
 
     @Override
     public void changePassword(Long id, String username, String email, String password) {
-
+        // TODO()
     }
 
     @Override
     public void deleteAllUsers() {
-
+        userRepository.deleteAll();
     }
 
     @Override
     public void deleteUsersByRole(String role) {
-
+        // TODO()
     }
 
     @Override

@@ -18,21 +18,21 @@ public interface IUserService {
 
     User updateUserDetails(UpdateUserRequest request, Long id) throws ResourceNotFoundException;
 
-    void deleteUser(Long id);
+    void deleteUser(Long id) throws ResourceNotFoundException;
 
     // Other Read Operations
-    User getUserByEmail(String email);
+    User getUserByEmail(String email) throws ResourceNotFoundException;
 
-    User getUserByUsername(String username);
+    User getUserByUsername(String username) throws ResourceNotFoundException;
 
-    List<User> getAllUsers();
+    List<User> getAllUsers() throws ResourceNotFoundException;
 
-    List<User> getUsersByRole(String role);
+    List<User> getUsersByRole(String role) throws ResourceNotFoundException;
 
-    List<Task> getUserTasks(Long id, String email, String username);
+    List<Task> getUserTasks(Long id) throws ResourceNotFoundException;
 
     // Other Update Operations
-    void updateUserRole(Long id, String username, String email, String role);
+    void updateUserRole(Long id, String role);
 
     void changePassword(Long id, String username, String email, String password);
 
