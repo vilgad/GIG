@@ -3,6 +3,8 @@ package com.snippet.gig.entity;
 import jakarta.persistence.*;
 import org.hibernate.annotations.NaturalId;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.List;
 
 @Entity
@@ -51,6 +53,7 @@ public class User {
         return id;
     }
 
+    @JsonIgnore
     public List<Task> getTasks() {
         return tasks;
     }

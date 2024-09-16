@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table
 public class Task {
@@ -96,6 +98,7 @@ public class Task {
         this.status = status;
     }
 
+    @JsonIgnore
     public List<User> getUsers() {
         return users;
     }

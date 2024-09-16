@@ -149,6 +149,7 @@ public class TaskService implements ITaskService {
                                 throw new AlreadyExistsException("this task is already assigned to user");
                             } else {
                                 user.addTask(t);
+                                userRepository.save(user);
                             }
                         },
                         () -> {
