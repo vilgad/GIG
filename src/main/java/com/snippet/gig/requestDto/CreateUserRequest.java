@@ -1,7 +1,5 @@
 package com.snippet.gig.requestDto;
 
-import org.hibernate.annotations.NaturalId;
-
 import java.util.Objects;
 
 public class CreateUserRequest {
@@ -11,6 +9,9 @@ public class CreateUserRequest {
     private String email;
     private String password;
     private String role;
+
+    public CreateUserRequest() {
+    }
 
     public CreateUserRequest(String name, String dob, String username, String email, String password, String role) {
         this.name = name;

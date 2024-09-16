@@ -86,7 +86,7 @@ public class UserController {
             List<User> users = userService.getAllUsers();
             return ResponseEntity.ok(new ApiResponse("Success", users));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         }
     }
 
