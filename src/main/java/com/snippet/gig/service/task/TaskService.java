@@ -1,8 +1,10 @@
 package com.snippet.gig.service.task;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.snippet.gig.service.user.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,18 +27,21 @@ public class TaskService implements ITaskService {
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
+    private final UserService userService;
     private final ModelMapper modelMapper;
 
     @Autowired
     public TaskService(
         TaskRepository taskRepository,
         UserRepository userRepository,
-        ProjectRepository projectRepository, 
+        ProjectRepository projectRepository,
+        UserService userService,
         ModelMapper modelMapper
     ) {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
         this.projectRepository = projectRepository;
+        this.userService = userService;
         this.modelMapper = modelMapper;
     }
 
@@ -77,7 +82,10 @@ public class TaskService implements ITaskService {
 
     @Override
     public void deleteTask(Long id) throws ResourceNotFoundException {
-        taskRepository.findById(id).ifPresentOrElse(taskRepository::delete, () -> {
+        taskRepository.findById(id).ifPresentOrElse(task -> {
+//            TODO(only person with special access like admin or manager can remove)
+            taskRepository.deleteAllUsersFromTask(id);
+        }, () -> {
             throw new ResourceNotFoundException("Task not present");
         });
     }
@@ -170,6 +178,7 @@ public class TaskService implements ITaskService {
                                 throw new AlreadyExistsException("this task is already assigned to this project");
                             } else {
                                 t.setProject(project);
+                                taskRepository.save(t);
                             }
                         },
                         () -> {
@@ -185,5 +194,19 @@ public class TaskService implements ITaskService {
     public TaskDto convertTasktoTaskDto(Task task) {
         return modelMapper.map(task, TaskDto.class);
     }
+
+    /* @Override
+    public void deleteUsersAssigned(Long id) throws ResourceNotFoundException {
+        taskRepository.findById(id)
+                .ifPresentOrElse(task -> {
+                    if (task.getUsers().isEmpty()) {
+                        throw new ResourceNotFoundException("Task is not assigned to any user");
+                    } else {
+//                        TODO()
+                    }
+                }, () -> {
+                    throw new ResourceNotFoundException("Task not present");
+                });
+    } */
 
 }

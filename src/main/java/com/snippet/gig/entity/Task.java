@@ -3,15 +3,13 @@ package com.snippet.gig.entity;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table
 public class Task {
-    // TODO("Connect task with comments")
-    // TODO("Connect task with attachments")
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -19,25 +17,19 @@ public class Task {
 
     private String title;
     private String description;
+    // TODO(Date)
     private String dueDate;
+    // TODO(ENUM)
     private String priority;
     private String status;
 
-    @ManyToMany(
-            mappedBy = "tasks",
-            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
-            fetch = FetchType.LAZY
-    )
+    @ManyToMany(mappedBy = "tasks", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<User> users;
 
 
     @ManyToOne
     @JoinColumn(name = "project_id")
     private Project project;
-
-    public Long getId() {
-        return id;
-    }
 
     public Task() {
     }
@@ -50,20 +42,16 @@ public class Task {
         this.status = status;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getTitle() {
         return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public Project getProject() {
-        return project;
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
     }
 
     public String getDescription() {
@@ -105,6 +93,28 @@ public class Task {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    @JsonIgnore
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return Objects.equals(getId(), task.getId()) && Objects.equals(getTitle(), task.getTitle()) && Objects.equals(getDescription(), task.getDescription()) && Objects.equals(getDueDate(), task.getDueDate()) && Objects.equals(getPriority(), task.getPriority()) && Objects.equals(getStatus(), task.getStatus()) && Objects.equals(getUsers(), task.getUsers()) && Objects.equals(getProject(), task.getProject());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getTitle(), getDescription(), getDueDate(), getPriority(), getStatus(), getUsers(), getProject());
     }
 
     @Override

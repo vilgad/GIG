@@ -32,14 +32,18 @@ public interface IUserService {
     List<Task> getUserTasks(Long id) throws ResourceNotFoundException;
 
     // Other Update Operations
-    void updateUserRole(Long id, String role);
+    void updateUserRole(Long id, String role) throws UnsupportedOperationException;
 
-    void changePassword(Long id, String username, String email, String password);
+    void changePassword(Long id, String username, String email, String password) throws UnsupportedOperationException ;
 
     // Other Delete Operations
+    void deleteUserTask(Long userId, Long taskId) throws ResourceNotFoundException;
+
+    void deleteUsersAllTasks(Long userId) throws ResourceNotFoundException;
+
     void deleteAllUsers();
 
-    void deleteUsersByRole(String role);
+    void deleteUsersByRole(String role) throws UnsupportedOperationException;
 
     // DTO method
     UserDto convertUserToDto(User user);

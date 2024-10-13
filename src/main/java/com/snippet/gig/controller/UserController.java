@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.CONFLICT;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("${api.prefix}/users")
@@ -35,9 +34,11 @@ public class UserController {
         try {
             User user = userService.getUserById(userId);
             UserDto userDto = userService.convertUserToDto(user);
-            return ResponseEntity.ok(new ApiResponse("Success", userDto));
+            return ResponseEntity.ok(new ApiResponse("User Fetched Successfully", userDto));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
         }
     }
 
@@ -51,6 +52,8 @@ public class UserController {
             return ResponseEntity.ok(new ApiResponse("Create User Success!", userDto));
         } catch (AlreadyExistsException e) {
             return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
         }
     }
 
@@ -65,6 +68,8 @@ public class UserController {
             return ResponseEntity.ok(new ApiResponse("Update User Success!", userDto));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
         }
     }
 
@@ -77,6 +82,8 @@ public class UserController {
             return ResponseEntity.ok(new ApiResponse("Delete User Success!", null));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
         }
     }
 
@@ -84,9 +91,21 @@ public class UserController {
     public ResponseEntity<ApiResponse> getAllUsers() {
         try {
             List<User> users = userService.getAllUsers();
-            return ResponseEntity.ok(new ApiResponse("Success", users));
+            return ResponseEntity.ok(new ApiResponse("All Users Fetched successfully", users));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @DeleteMapping("/all")
+    public ResponseEntity<ApiResponse> deleteAllUsers() {
+        try {
+            userService.deleteAllUsers();
+            return ResponseEntity.ok(new ApiResponse("all users deleted!", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
         }
     }
 
@@ -100,6 +119,8 @@ public class UserController {
             return ResponseEntity.ok(new ApiResponse("Success", userDto));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
         }
     }
 
@@ -113,6 +134,8 @@ public class UserController {
             return ResponseEntity.ok(new ApiResponse("User found!", userDto));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
         }
     }
 
@@ -125,6 +148,8 @@ public class UserController {
             return ResponseEntity.ok(new ApiResponse("Users found!", users));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
         }
     }
 
@@ -137,17 +162,37 @@ public class UserController {
             return ResponseEntity.ok(new ApiResponse("Users Tasks", tasks));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
-        }
-    }
-
-    @DeleteMapping("/all")
-    public ResponseEntity<ApiResponse> deleteAllUsers() {
-        try {
-            userService.deleteAllUsers();
-            return ResponseEntity.ok(new ApiResponse("Success", null));
         } catch (Exception e) {
-            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
         }
     }
 
+    @DeleteMapping("/deleteAllUserTasks")
+    public ResponseEntity<ApiResponse> deleteAllUserTasks(
+            @RequestParam Long userId
+    ) {
+        try {
+            userService.deleteUsersAllTasks(userId);
+            return ResponseEntity.ok(new ApiResponse("All Tasks removed!", null));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @DeleteMapping("/deleteUserTask")
+    public ResponseEntity<ApiResponse> deleteAllUserTasks(
+            @RequestParam Long userId,
+            @RequestParam Long taskId
+    ) {
+        try {
+            userService.deleteUserTask(userId, taskId);
+            return ResponseEntity.ok(new ApiResponse("Task removed Successfully", null));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
 }

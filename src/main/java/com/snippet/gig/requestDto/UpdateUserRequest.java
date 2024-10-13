@@ -35,12 +35,12 @@ public class UpdateUserRequest {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UpdateUserRequest that = (UpdateUserRequest) o;
-        return Objects.equals(name, that.name) && Objects.equals(dob, that.dob);
+        return Objects.equals(getName(), that.getName()) && Objects.equals(getDob(), that.getDob());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, dob);
+        return Objects.hash(getName(), getDob());
     }
 
     @Override

@@ -1,9 +1,5 @@
 package com.snippet.gig.controller;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.CONFLICT;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +23,8 @@ import com.snippet.gig.requestDto.CreateTaskRequest;
 import com.snippet.gig.requestDto.UpdateTaskRequest;
 import com.snippet.gig.response.ApiResponse;
 import com.snippet.gig.service.task.ITaskService;
+
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("${api.prefix}/tasks")
@@ -59,6 +57,8 @@ public class TaskController {
             return ResponseEntity.ok(new ApiResponse("Task Created Successfully", taskDto));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
         }
     }
 
@@ -71,6 +71,8 @@ public class TaskController {
             return ResponseEntity.ok(new ApiResponse("Task updated Successfully", null));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
         }
     }
 
@@ -82,6 +84,8 @@ public class TaskController {
             return ResponseEntity.ok(new ApiResponse("Task deleted Successfully", null));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
         }
     }
 
@@ -93,6 +97,8 @@ public class TaskController {
             return ResponseEntity.ok(new ApiResponse("All assigned users", users));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
         }
     }
 
@@ -104,6 +110,8 @@ public class TaskController {
             return ResponseEntity.ok(new ApiResponse("project assigned", project));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
         }
     }
 
@@ -111,9 +119,11 @@ public class TaskController {
     public ResponseEntity<ApiResponse> getAllTasks() {
         try {
             List<Task> tasks = taskService.getAllTasks();
-            return ResponseEntity.ok(new ApiResponse("Success", tasks));
+            return ResponseEntity.ok(new ApiResponse("All tasks successfully fetched", tasks));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
         }
     }
 
@@ -128,6 +138,8 @@ public class TaskController {
             return ResponseEntity.status(BAD_REQUEST).body(new ApiResponse(e.getMessage(), null));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
         }
     }
 
@@ -136,12 +148,27 @@ public class TaskController {
             @RequestParam Long projectId,
             @RequestParam Long taskId) {
         try {
-            taskService.assignProjectToTask(taskId, projectId);
+            taskService.assignProjectToTask(projectId = projectId,taskId = taskId);
             return ResponseEntity.ok(new ApiResponse("Success", null));
         } catch (AlreadyExistsException e) {
             return ResponseEntity.status(BAD_REQUEST).body(new ApiResponse(e.getMessage(), null));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
         }
     }
+
+    /* @DeleteMapping("/deleteUsersAssigned")
+    public ResponseEntity<ApiResponse> deleteUsersAssigned(
+            @RequestParam Long id) {
+        try {
+            taskService.deleteUsersAssigned(id);
+            return ResponseEntity.ok(new ApiResponse("Users removed Successfully", null));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
+        }
+    } */
 }

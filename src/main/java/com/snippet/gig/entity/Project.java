@@ -1,6 +1,8 @@
 package com.snippet.gig.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.hibernate.annotations.NaturalId;
 
 import java.util.List;
 
@@ -12,6 +14,7 @@ public class Project {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @NaturalId
     private String name;
     private String description;
     private String startDate;
@@ -19,6 +22,9 @@ public class Project {
 
     @OneToMany(orphanRemoval = true, mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Task> tasks;
+
+    @OneToMany(mappedBy = "project", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    private List<User> users;
 
     public Project() {
     }
@@ -30,16 +36,34 @@ public class Project {
         this.endDate = endDate;
     }
 
+    @JsonIgnore
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
     public Long getId() {
         return id;
     }
 
+    @JsonIgnore
     public List<Task> getTasks() {
         return tasks;
     }
 
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
+    }
+
+    public void addTask(Task task) {
+        this.tasks.add(task);
+    }
+
+    public void addUser(User user) {
+        this.users.add(user);
     }
 
     public String getName() {
@@ -76,13 +100,9 @@ public class Project {
 
     @Override
     public String toString() {
-        return "Project{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", startDate='" + startDate + '\'' +
-                ", endDate='" + endDate + '\'' +
-                ", tasks=" + tasks +
-                '}';
+        return "Project [id=" + id + ", name=" + name + ", description=" + description + ", startDate=" + startDate
+                + ", endDate=" + endDate + ", tasks=" + tasks + ", users=" + users + "]";
     }
+
+
 }

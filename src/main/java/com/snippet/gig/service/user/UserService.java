@@ -5,6 +5,7 @@ import com.snippet.gig.entity.Task;
 import com.snippet.gig.entity.User;
 import com.snippet.gig.exception.AlreadyExistsException;
 import com.snippet.gig.exception.ResourceNotFoundException;
+import com.snippet.gig.repository.TaskRepository;
 import com.snippet.gig.repository.UserRepository;
 import com.snippet.gig.requestDto.CreateUserRequest;
 import com.snippet.gig.requestDto.UpdateUserRequest;
@@ -15,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,11 +27,14 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class UserService implements IUserService{
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final TaskRepository taskRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository, ModelMapper modelMapper) {
+    public UserService(UserRepository userRepository, ModelMapper modelMapper,
+                       TaskRepository taskRepository) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
+        this.taskRepository = taskRepository;
     }
 
     @Override
@@ -96,6 +102,7 @@ public class UserService implements IUserService{
 
     @Override
     public List<User> getUsersByRole(String role) throws ResourceNotFoundException {
+        // TODO()
         List<User> users = userRepository.findByRole(role);
 
         if (users.isEmpty()) {
@@ -117,13 +124,52 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public void updateUserRole(Long id, String role) {
+    public void updateUserRole(Long id, String role) throws UnsupportedOperationException {
         // TODO()
     }
 
     @Override
-    public void changePassword(Long id, String username, String email, String password) {
-        // TODO()
+    public void changePassword(Long id, String username, String email, String password) throws UnsupportedOperationException {
+// TODO()
+    }
+
+    @Override
+    public void deleteUserTask(Long userId, Long taskId) throws ResourceNotFoundException {
+        userRepository.findById(userId).ifPresentOrElse(
+                user -> {
+                    taskRepository.findById(taskId).ifPresentOrElse(
+                            task -> {
+                                if (user.getTasks().contains(task)) {
+                                    task.getUsers().remove(user);
+                                    user.getTasks().remove(task);
+                                    userRepository.save(user);
+                                    taskRepository.save(task);
+                                } else
+                                    throw new ResourceNotFoundException("Task not assigned to this user");
+                            }, () -> {
+                                throw new ResourceNotFoundException("task not present");
+                            }
+                    );
+                }, () -> {
+                    throw new ResourceNotFoundException("User not found");
+                }
+        );
+    }
+
+    @Override
+    public void deleteUsersAllTasks(Long userId) throws ResourceNotFoundException {
+        userRepository.findById(userId).ifPresentOrElse(
+                user -> {
+                    if (user.getTasks().isEmpty()) {
+                        throw new ResourceNotFoundException("No task is assigned");
+                    } else {
+                        user.setTasks(null);
+                        userRepository.save(user);
+                    }
+                }, () -> {
+                    throw new ResourceNotFoundException("User not found");
+                }
+        );
     }
 
     @Override
@@ -132,7 +178,7 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public void deleteUsersByRole(String role) {
+    public void deleteUsersByRole(String role) throws UnsupportedOperationException {
         // TODO()
     }
 

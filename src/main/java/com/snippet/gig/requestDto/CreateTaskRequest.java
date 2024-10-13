@@ -112,6 +112,4 @@ public class CreateTaskRequest {
         return "CreateTaskRequest [title=" + title + ", description=" + description + ", dueDate=" + dueDate
                 + ", priority=" + priority + ", status=" + status + "]";
     }
-
-        
 }

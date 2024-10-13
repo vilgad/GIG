@@ -75,12 +75,12 @@ public class CreateUserRequest {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CreateUserRequest that = (CreateUserRequest) o;
-        return Objects.equals(name, that.name) && Objects.equals(dob, that.dob) && Objects.equals(username, that.username) && Objects.equals(email, that.email) && Objects.equals(password, that.password) && Objects.equals(role, that.role);
+        return Objects.equals(getName(), that.getName()) && Objects.equals(getDob(), that.getDob()) && Objects.equals(getUsername(), that.getUsername()) && Objects.equals(getEmail(), that.getEmail()) && Objects.equals(getPassword(), that.getPassword()) && Objects.equals(getRole(), that.getRole());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, dob, username, email, password, role);
+        return Objects.hash(getName(), getDob(), getUsername(), getEmail(), getPassword(), getRole());
     }
 
     @Override
