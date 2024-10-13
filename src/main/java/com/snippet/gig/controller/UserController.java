@@ -64,7 +64,7 @@ public class UserController {
 
     @PutMapping("/user")
     public ResponseEntity<ApiResponse> updateUser(
-            @RequestBody UpdateUserRequest request,
+            @RequestBody @Valid UpdateUserRequest request,
             @RequestParam Long userId
     ) {
         try {

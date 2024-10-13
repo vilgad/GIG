@@ -1,5 +1,8 @@
 package com.snippet.gig.requestDto;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.Objects;
 
 public class UpdateUserRequest {
