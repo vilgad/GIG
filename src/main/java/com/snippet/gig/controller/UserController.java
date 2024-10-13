@@ -4,13 +4,16 @@ import com.snippet.gig.dto.UserDto;
 import com.snippet.gig.entity.Task;
 import com.snippet.gig.entity.User;
 import com.snippet.gig.exception.AlreadyExistsException;
+import com.snippet.gig.exception.BadRequestException;
 import com.snippet.gig.exception.ResourceNotFoundException;
 import com.snippet.gig.requestDto.CreateUserRequest;
 import com.snippet.gig.requestDto.UpdateUserRequest;
 import com.snippet.gig.response.ApiResponse;
 import com.snippet.gig.service.user.IUserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,7 +47,7 @@ public class UserController {
 
     @PostMapping("/user")
     public ResponseEntity<ApiResponse> createUser(
-            @RequestBody CreateUserRequest request
+            @RequestBody @Valid CreateUserRequest request
     ) {
         try {
             User user = userService.createUser(request);
@@ -52,9 +55,11 @@ public class UserController {
             return ResponseEntity.ok(new ApiResponse("Create User Success!", userDto));
         } catch (AlreadyExistsException e) {
             return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
+        } /*catch (BadRequestException e) {
+            return ResponseEntity.status(BAD_REQUEST).body(new ApiResponse(e.getMessage(), null));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
-        }
+        }*/
     }
 
     @PutMapping("/user")

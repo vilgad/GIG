@@ -4,6 +4,7 @@ import com.snippet.gig.dto.UserDto;
 import com.snippet.gig.entity.Task;
 import com.snippet.gig.entity.User;
 import com.snippet.gig.exception.AlreadyExistsException;
+import com.snippet.gig.exception.BadRequestException;
 import com.snippet.gig.exception.ResourceNotFoundException;
 import com.snippet.gig.requestDto.CreateUserRequest;
 import com.snippet.gig.requestDto.UpdateUserRequest;

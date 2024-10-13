@@ -13,6 +13,7 @@ public class CreateUserRequest {
     @NotEmpty(message = "name cannot be empty")
     private String name;
 
+    // TODO(Fix for dob)
     @DateTimeFormat
     private String dob;
 
