@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,6 +41,7 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/project")
     public ResponseEntity<ApiResponse> createProject(
         @RequestBody CreateProjectRequest request
@@ -58,6 +60,7 @@ public class ProjectController {
         }*/
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/project")
     public ResponseEntity<ApiResponse> updateProject(
         @RequestBody UpdateProjectRequest request,
@@ -93,6 +96,7 @@ public class ProjectController {
         }*/
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/project")
     public ResponseEntity<ApiResponse> deleteProject(
         @RequestParam Long id
@@ -155,6 +159,7 @@ public class ProjectController {
         }*/
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/all")
     public ResponseEntity<ApiResponse> deleteAll() {
         projectService.deleteAll();
@@ -169,6 +174,7 @@ public class ProjectController {
         }*/
     }
 
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PutMapping("assignProjectToUser")
     public ResponseEntity<ApiResponse> assignProjectToUser(
         @RequestParam Long projectId,

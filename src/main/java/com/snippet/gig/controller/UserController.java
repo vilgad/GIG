@@ -13,6 +13,7 @@ import com.snippet.gig.service.user.IUserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -87,6 +88,7 @@ public class UserController {
         }*/
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/user")
     public ResponseEntity<ApiResponse> deleteUser(
             @RequestParam Long userId
@@ -117,6 +119,7 @@ public class UserController {
         }*/
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/all")
     public ResponseEntity<ApiResponse> deleteAllUsers() {
         userService.deleteAllUsers();
@@ -165,21 +168,21 @@ public class UserController {
         }*/
     }
 
-    @GetMapping("/getUsersByRole")
+   /* @GetMapping("/getUsersByRole")
     public ResponseEntity<ApiResponse> getUsersByRole(
             @RequestParam String role
     ) {
         List<User> users = userService.getUsersByRole(role);
         return ResponseEntity.ok(new ApiResponse("Users found!", users));
-        /*try {
+        *//*try {
             List<User> users = userService.getUsersByRole(role);
             return ResponseEntity.ok(new ApiResponse("Users found!", users));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
-        }*/
-    }
+        }*//*
+    }*/
 
     @GetMapping("/getUserTasks")
     public ResponseEntity<ApiResponse> getUserTasks(
@@ -197,6 +200,7 @@ public class UserController {
         }*/
     }
 
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @DeleteMapping("/deleteAllUserTasks")
     public ResponseEntity<ApiResponse> deleteAllUserTasks(
             @RequestParam Long userId
@@ -213,6 +217,7 @@ public class UserController {
         }*/
     }
 
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @DeleteMapping("/deleteUserTask")
     public ResponseEntity<ApiResponse> deleteAllUserTasks(
             @RequestParam Long userId,

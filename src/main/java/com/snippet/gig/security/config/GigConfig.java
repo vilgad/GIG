@@ -1,4 +1,4 @@
-package com.snippet.gig.config;
+package com.snippet.gig.security.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

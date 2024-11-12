@@ -19,7 +19,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByUsername(String username);
 
-    List<User> findByRole(String role);
+//    List<User> findByRole(String role);
 
     // solved error by realising User is treated as an entity
     @Transactional

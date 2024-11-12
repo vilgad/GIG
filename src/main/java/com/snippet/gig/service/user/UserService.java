@@ -9,8 +9,12 @@ import com.snippet.gig.repository.TaskRepository;
 import com.snippet.gig.repository.UserRepository;
 import com.snippet.gig.requestDto.CreateUserRequest;
 import com.snippet.gig.requestDto.UpdateUserRequest;
+import com.snippet.gig.utils.UserDetail;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +25,8 @@ public class UserService implements IUserService{
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final TaskRepository taskRepository;
+
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     @Autowired
     public UserService(UserRepository userRepository, ModelMapper modelMapper,
@@ -37,12 +43,11 @@ public class UserService implements IUserService{
                 .map(req -> {
                     User user = new User();
                     user.setEmail(request.getEmail());
-                    user.setPassword(request.getPassword());
+                    user.setPassword(encoder.encode(request.getPassword()));
                     user.setName(request.getName());
                     user.setDob(request.getDob());
                     user.setUsername(request.getUsername());
                     // TODO(Lookout for this)
-                    user.setRole(request.getRole());
                     return userRepository.save(user);
                 }).orElseThrow(() -> new AlreadyExistsException("User with this email or username already exists"));
     }
@@ -93,7 +98,7 @@ public class UserService implements IUserService{
         return users;
     }
 
-    @Override
+    /*@Override
     public List<User> getUsersByRole(String role) throws ResourceNotFoundException {
         // TODO()
         List<User> users = userRepository.findByRole(role);
@@ -103,7 +108,7 @@ public class UserService implements IUserService{
         }
 
         return users;
-    }
+    }*/
 
     @Override
     public List<Task> getUserTasks(Long id) throws ResourceNotFoundException {
@@ -116,10 +121,10 @@ public class UserService implements IUserService{
         }
     }
 
-    @Override
+   /* @Override
     public void updateUserRole(Long id, String role) throws UnsupportedOperationException {
         // TODO()
-    }
+    }*/
 
     @Override
     public void changePassword(Long id, String username, String email, String password) throws UnsupportedOperationException {
@@ -170,13 +175,20 @@ public class UserService implements IUserService{
         userRepository.deleteAll();
     }
 
-    @Override
+    /*@Override
     public void deleteUsersByRole(String role) throws UnsupportedOperationException {
         // TODO()
-    }
+    }*/
 
     @Override
     public UserDto convertUserToDto(User user) {
         return modelMapper.map(user, UserDto.class);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = getUserByUsername(username);
+
+        return new UserDetail(user);
     }
 }

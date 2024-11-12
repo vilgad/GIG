@@ -8,10 +8,11 @@ import com.snippet.gig.exception.BadRequestException;
 import com.snippet.gig.exception.ResourceNotFoundException;
 import com.snippet.gig.requestDto.CreateUserRequest;
 import com.snippet.gig.requestDto.UpdateUserRequest;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
-public interface IUserService {
+public interface IUserService extends UserDetailsService {
     // basic crud operations
     User createUser(CreateUserRequest user) throws AlreadyExistsException;
 
@@ -28,12 +29,12 @@ public interface IUserService {
 
     List<User> getAllUsers() throws ResourceNotFoundException;
 
-    List<User> getUsersByRole(String role) throws ResourceNotFoundException;
+//    List<User> getUsersByRole(String role) throws ResourceNotFoundException;
 
     List<Task> getUserTasks(Long id) throws ResourceNotFoundException;
 
     // Other Update Operations
-    void updateUserRole(Long id, String role) throws UnsupportedOperationException;
+//    void updateUserRole(Long id, String role) throws UnsupportedOperationException;
 
     void changePassword(Long id, String username, String email, String password) throws UnsupportedOperationException ;
 
@@ -44,7 +45,7 @@ public interface IUserService {
 
     void deleteAllUsers();
 
-    void deleteUsersByRole(String role) throws UnsupportedOperationException;
+//    void deleteUsersByRole(String role) throws UnsupportedOperationException;
 
     // DTO method
     UserDto convertUserToDto(User user);

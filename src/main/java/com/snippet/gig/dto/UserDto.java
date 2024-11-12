@@ -1,8 +1,10 @@
 package com.snippet.gig.dto;
 
 import com.snippet.gig.entity.Project;
+import com.snippet.gig.entity.Role;
 import com.snippet.gig.entity.Task;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,24 +16,23 @@ public class UserDto {
     private String username;
     private String email;
     private String password;
-    private String role;
     private List<Task> tasks;
     private Project project;
+    private Collection<Role> roles;
 
     public UserDto() {
     }
 
-    public UserDto(Long id, String name, String dob, String username, String email, String password, String role,
-                   List<Task> tasks, Project project) {
+    public UserDto(Long id, String name, String dob, String username, String email, String password, List<Task> tasks, Project project, Collection<Role> roles) {
         this.id = id;
         this.name = name;
         this.dob = dob;
         this.username = username;
         this.email = email;
         this.password = password;
-        this.role = role;
         this.tasks = tasks;
         this.project = project;
+        this.roles = roles;
     }
 
     public Long getId() {
@@ -82,14 +83,6 @@ public class UserDto {
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
     public List<Task> getTasks() {
         return tasks;
     }
@@ -106,31 +99,24 @@ public class UserDto {
         this.project = project;
     }
 
+    public Collection<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Collection<Role> roles) {
+        this.roles = roles;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserDto userDto = (UserDto) o;
-        return Objects.equals(getId(), userDto.getId()) && Objects.equals(getName(), userDto.getName()) && Objects.equals(getDob(), userDto.getDob()) && Objects.equals(getUsername(), userDto.getUsername()) && Objects.equals(getEmail(), userDto.getEmail()) && Objects.equals(getPassword(), userDto.getPassword()) && Objects.equals(getRole(), userDto.getRole()) && Objects.equals(getTasks(), userDto.getTasks()) && Objects.equals(getProject(), userDto.getProject());
+        return Objects.equals(getId(), userDto.getId()) && Objects.equals(getName(), userDto.getName()) && Objects.equals(getDob(), userDto.getDob()) && Objects.equals(getUsername(), userDto.getUsername()) && Objects.equals(getEmail(), userDto.getEmail()) && Objects.equals(getPassword(), userDto.getPassword()) && Objects.equals(getTasks(), userDto.getTasks()) && Objects.equals(getProject(), userDto.getProject()) && Objects.equals(getRoles(), userDto.getRoles());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getDob(), getUsername(), getEmail(), getPassword(), getRole(), getTasks(), getProject());
-    }
-
-    @Override
-    public String toString() {
-        return "UserDto{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", dob='" + dob + '\'' +
-                ", username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", role='" + role + '\'' +
-                ", tasks=" + tasks +
-                ", project=" + project +
-                '}';
+        return Objects.hash(getId(), getName(), getDob(), getUsername(), getEmail(), getPassword(), getTasks(), getProject(), getRoles());
     }
 }

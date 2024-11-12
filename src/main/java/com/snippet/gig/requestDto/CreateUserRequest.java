@@ -31,20 +31,15 @@ public class CreateUserRequest {
     @Size(min = 8, message = "password must be of at-least 8 characters")
     private String password;
 
-    @NotNull(message = "role cannot be null")
-    @NotEmpty(message = "role cannot be empty")
-    private String role;
-
     public CreateUserRequest() {
     }
 
-    public CreateUserRequest(String name, String dob, String username, String email, String password, String role) {
+    public CreateUserRequest(String name, String dob, String username, String email, String password) {
         this.name = name;
         this.dob = dob;
         this.username = username;
         this.email = email;
         this.password = password;
-        this.role = role;
     }
 
     public String getName() {
@@ -87,25 +82,17 @@ public class CreateUserRequest {
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CreateUserRequest that = (CreateUserRequest) o;
-        return Objects.equals(getName(), that.getName()) && Objects.equals(getDob(), that.getDob()) && Objects.equals(getUsername(), that.getUsername()) && Objects.equals(getEmail(), that.getEmail()) && Objects.equals(getPassword(), that.getPassword()) && Objects.equals(getRole(), that.getRole());
+        return Objects.equals(getName(), that.getName()) && Objects.equals(getDob(), that.getDob()) && Objects.equals(getUsername(), that.getUsername()) && Objects.equals(getEmail(), that.getEmail()) && Objects.equals(getPassword(), that.getPassword());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getDob(), getUsername(), getEmail(), getPassword(), getRole());
+        return Objects.hash(getName(), getDob(), getUsername(), getEmail(), getPassword());
     }
 
     @Override
@@ -116,7 +103,6 @@ public class CreateUserRequest {
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", role='" + role + '\'' +
                 '}';
     }
 }

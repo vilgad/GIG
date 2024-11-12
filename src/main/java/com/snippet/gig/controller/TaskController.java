@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,6 +37,7 @@ public class TaskController {
         this.taskService = taskService;
     }
 
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PostMapping("/task")
     public ResponseEntity<ApiResponse> createTask(
             @RequestBody CreateTaskRequest request) {
@@ -68,6 +70,7 @@ public class TaskController {
         }*/
     }
 
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PutMapping("/task")
     public ResponseEntity<ApiResponse> updateTask(
             @RequestBody UpdateTaskRequest request,
@@ -84,6 +87,7 @@ public class TaskController {
         }*/
     }
 
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @DeleteMapping("/task")
     public ResponseEntity<ApiResponse> deleteTask(
             @RequestParam Long id) {
@@ -143,6 +147,7 @@ public class TaskController {
         }*/
     }
 
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PutMapping("/assignTaskToUser")
     public ResponseEntity<ApiResponse> assignTaskToUser(
             @RequestParam Long taskId,
@@ -161,6 +166,7 @@ public class TaskController {
         }*/
     }
 
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PutMapping("/assignProjectToTask")
     public ResponseEntity<ApiResponse> assignProjectToTask(
             @RequestParam Long projectId,

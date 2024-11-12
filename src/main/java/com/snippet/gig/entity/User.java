@@ -1,10 +1,11 @@
 package com.snippet.gig.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.NaturalId;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 @Entity
@@ -22,7 +23,7 @@ public class User {
     @NaturalId
     private String email;
     private String password;
-    private String role;
+
 
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
@@ -32,10 +33,17 @@ public class User {
     )
     private List<Task> tasks;
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {
+            CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id")
+        , inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
+    )
+    private Collection<Role> roles = new HashSet<>();
+
     // lazy fetch was causing error
     @ManyToOne(
-        cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}
-        )
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}
+    )
     @JoinColumn(name = "project_id")
     private Project project;
 
@@ -43,13 +51,16 @@ public class User {
     public User() {
     }
 
-    public User(String name, String dob, String username, String email, String password, String role) {
+    public User(String name, String dob, String username, String email, String password) {
         this.name = name;
         this.dob = dob;
         this.username = username;
         this.email = email;
         this.password = password;
-        this.role = role;
+    }
+
+    public Collection<Role> getRoles() {
+        return roles;
     }
 
     public Long getId() {
@@ -96,14 +107,6 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
     @JsonIgnore
     public List<Task> getTasks() {
         return tasks;
@@ -131,13 +134,21 @@ public class User {
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", role='" + role + '\'' +
                 ", tasks=" + tasks +
+                ", roles=" + roles +
                 ", project=" + project +
                 '}';
     }
 
     public void addTask(Task t) {
         tasks.add(t);
+    }
+
+    public void addRole(Role r) {
+        roles.add(r);
+    }
+
+    public void setRoles(Collection<Role> roles) {
+        this.roles = roles;
     }
 }
