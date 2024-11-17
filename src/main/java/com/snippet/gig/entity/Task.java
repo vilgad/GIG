@@ -130,4 +130,8 @@ public class Task {
                 ", project=" + project +
                 '}';
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

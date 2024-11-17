@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.NaturalId;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,10 +22,10 @@ public class Project {
     private String endDate;
 
     @OneToMany(orphanRemoval = true, mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Task> tasks;
+    private List<Task> tasks = new ArrayList<>();
 
     @OneToMany(mappedBy = "project", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    private List<User> users;
+    private List<User> users = new ArrayList<>();
 
     public Project() {
     }
@@ -39,6 +40,10 @@ public class Project {
     @JsonIgnore
     public List<User> getUsers() {
         return users;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setUsers(List<User> users) {

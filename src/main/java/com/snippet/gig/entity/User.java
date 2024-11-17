@@ -151,4 +151,8 @@ public class User {
     public void setRoles(Collection<Role> roles) {
         this.roles = roles;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }
