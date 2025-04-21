@@ -1,14 +1,5 @@
 package com.snippet.gig.service.project;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import com.snippet.gig.repository.TaskRepository;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.snippet.gig.dto.ProjectDto;
 import com.snippet.gig.entity.Project;
 import com.snippet.gig.entity.Task;
@@ -16,9 +7,16 @@ import com.snippet.gig.entity.User;
 import com.snippet.gig.exception.AlreadyExistsException;
 import com.snippet.gig.exception.ResourceNotFoundException;
 import com.snippet.gig.repository.ProjectRepository;
+import com.snippet.gig.repository.TaskRepository;
 import com.snippet.gig.repository.UserRepository;
 import com.snippet.gig.requestDto.CreateProjectRequest;
 import com.snippet.gig.requestDto.UpdateProjectRequest;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProjectService implements IProjectService {
@@ -79,10 +77,9 @@ public class ProjectService implements IProjectService {
     @Override
     public void deleteProject(Long id) throws ResourceNotFoundException {
         projectRepository.findById(id).ifPresentOrElse(project -> {
-
-            userRepository.setProjectIdNull(id);
-            taskRepository.deleteProjectTasks(id);
-            projectRepository.deleteProject(id);
+                    userRepository.setProjectIdNull(id);
+                    taskRepository.deleteProjectTasks(id);
+                    projectRepository.deleteProject(id);
                 },
                 () -> {
                     throw new ResourceNotFoundException("Project does not exist");
