@@ -29,7 +29,7 @@ public class SecurityConfig {
     private final JwtAuthEntryPoint authEntryPoint;
 
     private static final List<String> SECURED_URLS =
-            List.of("/api/v1/tasks/**", "/api/v1/projects/**");
+            List.of("/api/v1/tasks/private/**", "/api/v1/projects/private/**","/api/v1/users/private/**");
 
     @Autowired
     public SecurityConfig(IUserService userService, JwtAuthEntryPoint authEntryPoint) {

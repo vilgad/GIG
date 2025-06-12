@@ -27,8 +27,8 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
-    @PostMapping("/task")
+    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PostMapping("/private/task")
     public ResponseEntity<ApiResponse> createTask(
             @RequestBody CreateTaskRequest request) {
         Task task = taskService.createTask(request);
@@ -40,7 +40,7 @@ public class TaskController {
                 ));
     }
 
-    @GetMapping("/task")
+    @GetMapping("/public/task")
     public ResponseEntity<ApiResponse> getTaskById(
             @RequestParam Long id) {
         Task task = taskService.getTaskById(id);
@@ -52,8 +52,8 @@ public class TaskController {
                 ));
     }
 
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
-    @PutMapping("/task")
+    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PutMapping("/private/task")
     public ResponseEntity<ApiResponse> updateTask(
             @RequestBody UpdateTaskRequest request,
             @RequestParam Long id) {
@@ -65,8 +65,8 @@ public class TaskController {
                 ));
     }
 
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
-    @DeleteMapping("/task")
+    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @DeleteMapping("/private/task")
     public ResponseEntity<ApiResponse> deleteTask(
             @RequestParam Long id) {
         taskService.deleteTask(id);
@@ -77,7 +77,7 @@ public class TaskController {
                 ));
     }
 
-    @GetMapping("/getUsersAssigned")
+    @GetMapping("/public/getUsersAssigned")
     public ResponseEntity<ApiResponse> getUsersAssigned(
             @RequestParam Long id) {
         List<User> users = taskService.getUsersAssigned(id);
@@ -88,7 +88,7 @@ public class TaskController {
                 ));
     }
 
-    @GetMapping("/getProject")
+    @GetMapping("/public/getProject")
     public ResponseEntity<ApiResponse> getProject(
             @RequestParam Long taskId) {
         Project project = taskService.getProject(taskId);
@@ -99,7 +99,7 @@ public class TaskController {
                 ));
         }
 
-    @GetMapping("/all")
+    @GetMapping("/public/all")
     public ResponseEntity<ApiResponse> getAllTasks() {
         List<Task> tasks = taskService.getAllTasks();
         return ResponseEntity.ok(new ApiResponse(
@@ -108,8 +108,8 @@ public class TaskController {
         ));
     }
 
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
-    @PutMapping("/assignTaskToUser")
+    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PutMapping("/private/assignTaskToUser")
     public ResponseEntity<ApiResponse> assignTaskToUser(
             @RequestParam Long taskId,
             @RequestParam Long userId) {
@@ -121,8 +121,8 @@ public class TaskController {
                 ));
     }
 
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
-    @PutMapping("/assignProjectToTask")
+    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PutMapping("/private/assignProjectToTask")
     public ResponseEntity<ApiResponse> assignProjectToTask(
             @RequestParam Long projectId,
             @RequestParam Long taskId) {
