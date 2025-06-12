@@ -3,26 +3,22 @@ package com.snippet.gig.controller;
 import com.snippet.gig.dto.UserDto;
 import com.snippet.gig.entity.Task;
 import com.snippet.gig.entity.User;
-import com.snippet.gig.exception.AlreadyExistsException;
-import com.snippet.gig.exception.BadRequestException;
-import com.snippet.gig.exception.ResourceNotFoundException;
 import com.snippet.gig.requestDto.CreateUserRequest;
 import com.snippet.gig.requestDto.UpdateUserRequest;
 import com.snippet.gig.response.ApiResponse;
 import com.snippet.gig.service.user.IUserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.*;
-
 @RestController
 @RequestMapping("${api.prefix}/users")
+@Tag(name = "User APIs")
 public class UserController {
     private final IUserService userService;
 
@@ -37,16 +33,11 @@ public class UserController {
     ) {
         User user = userService.getUserById(userId);
         UserDto userDto = userService.convertUserToDto(user);
-        return ResponseEntity.ok(new ApiResponse("User Fetched Successfully", userDto));
-        /*try {
-            User user = userService.getUserById(userId);
-            UserDto userDto = userService.convertUserToDto(user);
-            return ResponseEntity.ok(new ApiResponse("User Fetched Successfully", userDto));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
-        }*/
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        "User Fetched Successfully",
+                        userDto
+                ));
     }
 
     @PostMapping("/user")
@@ -55,18 +46,11 @@ public class UserController {
     ) {
         User user = userService.createUser(request);
         UserDto userDto = userService.convertUserToDto(user);
-        return ResponseEntity.ok(new ApiResponse("Create User Success!", userDto));
-        /* try {
-            User user = userService.createUser(request);
-            UserDto userDto = userService.convertUserToDto(user);
-            return ResponseEntity.ok(new ApiResponse("Create User Success!", userDto));
-        } catch (AlreadyExistsException e) {
-            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
-        } catch (BadRequestException e) {
-            return ResponseEntity.status(BAD_REQUEST).body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
-        }*/
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        "Create User Success!",
+                        userDto
+                ));
     }
 
     @PutMapping("/user")
@@ -76,16 +60,11 @@ public class UserController {
     ) {
         User user = userService.updateUserDetails(request, userId);
         UserDto userDto = userService.convertUserToDto(user);
-        return ResponseEntity.ok(new ApiResponse("Update User Success!", userDto));
-       /* try {
-            User user = userService.updateUserDetails(request, userId);
-            UserDto userDto = userService.convertUserToDto(user);
-            return ResponseEntity.ok(new ApiResponse("Update User Success!", userDto));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
-        }*/
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        "Update User Success!",
+                        userDto
+                ));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -94,42 +73,31 @@ public class UserController {
             @RequestParam Long userId
     ) {
         userService.deleteUser(userId);
-        return ResponseEntity.ok(new ApiResponse("Delete User Success!", null));
-        /*try {
-            userService.deleteUser(userId);
-            return ResponseEntity.ok(new ApiResponse("Delete User Success!", null));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
-        }*/
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        "Delete User Success!",
+                        null
+                ));
     }
 
     @GetMapping("/all")
     public ResponseEntity<ApiResponse> getAllUsers() {
         List<User> users = userService.getAllUsers();
-        return ResponseEntity.ok(new ApiResponse("All Users Fetched successfully", users));
-        /* try {
-            List<User> users = userService.getAllUsers();
-            return ResponseEntity.ok(new ApiResponse("All Users Fetched successfully", users));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
-        }*/
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        "All Users Fetched successfully",
+                        users));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/all")
     public ResponseEntity<ApiResponse> deleteAllUsers() {
         userService.deleteAllUsers();
-        return ResponseEntity.ok(new ApiResponse("all users deleted!", null));
-        /*try {
-            userService.deleteAllUsers();
-            return ResponseEntity.ok(new ApiResponse("all users deleted!", null));
-        } catch (Exception e) {
-            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
-        }*/
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        "all users deleted!",
+                        null
+                ));
     }
 
     @GetMapping("/getUserByEmail")
@@ -138,16 +106,11 @@ public class UserController {
     ) {
         User user = userService.getUserByEmail(email);
         UserDto userDto = userService.convertUserToDto(user);
-        return ResponseEntity.ok(new ApiResponse("Success", userDto));
-        /*try {
-            User user = userService.getUserByEmail(email);
-            UserDto userDto = userService.convertUserToDto(user);
-            return ResponseEntity.ok(new ApiResponse("Success", userDto));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
-        }*/
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        "Success",
+                        userDto
+                ));
     }
 
     @GetMapping("/getUserByUsername")
@@ -156,16 +119,11 @@ public class UserController {
     ) {
         User user = userService.getUserByUsername(username);
         UserDto userDto = userService.convertUserToDto(user);
-        return ResponseEntity.ok(new ApiResponse("User found!", userDto));
-        /*try {
-            User user = userService.getUserByUsername(username);
-            UserDto userDto = userService.convertUserToDto(user);
-            return ResponseEntity.ok(new ApiResponse("User found!", userDto));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
-        }*/
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        "User found!",
+                        userDto
+                ));
     }
 
    /* @GetMapping("/getUsersByRole")
@@ -189,15 +147,11 @@ public class UserController {
             @RequestParam Long id
     ) {
         List<Task> tasks = userService.getUserTasks(id);
-        return ResponseEntity.ok(new ApiResponse("Users Tasks", tasks));
-        /*try {
-            List<Task> tasks = userService.getUserTasks(id);
-            return ResponseEntity.ok(new ApiResponse("Users Tasks", tasks));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
-        }*/
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        "Users Tasks",
+                        tasks
+                ));
     }
 
     @PreAuthorize("hasRole('ROLE_MANAGER')")
@@ -206,15 +160,11 @@ public class UserController {
             @RequestParam Long userId
     ) {
         userService.deleteUsersAllTasks(userId);
-        return ResponseEntity.ok(new ApiResponse("All Tasks removed!", null));
-        /*try {
-            userService.deleteUsersAllTasks(userId);
-            return ResponseEntity.ok(new ApiResponse("All Tasks removed!", null));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
-        }*/
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        "All Tasks removed!",
+                        null
+                ));
     }
 
     @PreAuthorize("hasRole('ROLE_MANAGER')")
@@ -224,14 +174,10 @@ public class UserController {
             @RequestParam Long taskId
     ) {
         userService.deleteUserTask(userId, taskId);
-        return ResponseEntity.ok(new ApiResponse("Task removed Successfully", null));
-        /*try {
-            userService.deleteUserTask(userId, taskId);
-            return ResponseEntity.ok(new ApiResponse("Task removed Successfully", null));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
-        }*/
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        "Task removed Successfully",
+                        null
+                ));
     }
 }

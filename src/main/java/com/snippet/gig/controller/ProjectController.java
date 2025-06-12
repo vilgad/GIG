@@ -1,38 +1,25 @@
 package com.snippet.gig.controller;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.CONFLICT;
-import static org.springframework.http.HttpStatus.NOT_ACCEPTABLE;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.snippet.gig.dto.ProjectDto;
 import com.snippet.gig.entity.Project;
 import com.snippet.gig.entity.Task;
 import com.snippet.gig.entity.User;
-import com.snippet.gig.exception.AlreadyExistsException;
-import com.snippet.gig.exception.ResourceNotFoundException;
 import com.snippet.gig.requestDto.CreateProjectRequest;
 import com.snippet.gig.requestDto.UpdateProjectRequest;
 import com.snippet.gig.response.ApiResponse;
 import com.snippet.gig.service.project.IProjectService;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
 @RequestMapping("${api.prefix}/projects")
+@Tag(name = "Project APIs")
 public class ProjectController {
     private final IProjectService projectService;
 
@@ -44,153 +31,113 @@ public class ProjectController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/project")
     public ResponseEntity<ApiResponse> createProject(
-        @RequestBody CreateProjectRequest request
+            @RequestBody CreateProjectRequest request
     ) {
         Project project = projectService.createProject(request);
         ProjectDto projectDto = projectService.convertProjectToProjectDto(project);
-        return ResponseEntity.ok(new ApiResponse("Project Created Successfully", projectDto));
-        /*try {
-            Project project = projectService.createProject(request);
-            ProjectDto projectDto = projectService.convertProjectToProjectDto(project);
-            return ResponseEntity.ok(new ApiResponse("Project Created Successfully", projectDto));
-        } catch (AlreadyExistsException e) {
-            return ResponseEntity.status(BAD_REQUEST).body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
-        }*/
+        return ResponseEntity.ok(
+                new ApiResponse(
+                "Project Created Successfully",
+                projectDto
+        ));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/project")
     public ResponseEntity<ApiResponse> updateProject(
-        @RequestBody UpdateProjectRequest request,
-        @RequestParam Long id
+            @RequestBody UpdateProjectRequest request,
+            @RequestParam Long id
     ) {
         projectService.updateProject(request, id);
-        return ResponseEntity.ok(new ApiResponse("Project Updated Successfully", null));
-        /*try {
-            projectService.updateProject(request, id);
-            return ResponseEntity.ok(new ApiResponse("Project Updated Successfully", null));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
-        }*/
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        "Project Updated Successfully",
+                        null
+                ));
     }
 
     @GetMapping("/project")
     public ResponseEntity<ApiResponse> getProjectById(
-        @RequestParam Long id
+            @RequestParam Long id
     ) {
         Project project = projectService.getProject(id);
         ProjectDto projectDto = projectService.convertProjectToProjectDto(project);
-        return ResponseEntity.ok(new ApiResponse("Project fetched Successfully", projectDto));
-        /*try {
-            Project project = projectService.getProject(id);
-            ProjectDto projectDto = projectService.convertProjectToProjectDto(project);
-            return ResponseEntity.ok(new ApiResponse("Project fetched Successfully", projectDto));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
-        }*/
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        "Project fetched Successfully",
+                        projectDto
+                ));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/project")
     public ResponseEntity<ApiResponse> deleteProject(
-        @RequestParam Long id
+            @RequestParam Long id
     ) {
         projectService.deleteProject(id);
-        return ResponseEntity.ok(new ApiResponse("Project deleted Successfully", null));
-        /*try {
-            projectService.deleteProject(id);
-            return ResponseEntity.ok(new ApiResponse("Project deleted Successfully", null));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
-        }*/
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        "Project deleted Successfully",
+                        null
+                ));
     }
 
     @GetMapping("/getTasks")
     public ResponseEntity<ApiResponse> getTasks(
-        @RequestParam Long projectId
+            @RequestParam Long projectId
     ) {
         List<Task> tasks = projectService.getTasks(projectId);
-        return ResponseEntity.ok(new ApiResponse("Project Tasks fetched Successfully", tasks));
-       /* try {
-            List<Task> tasks = projectService.getTasks(projectId);
-            return ResponseEntity.ok(new ApiResponse("Project Tasks fetched Successfully", tasks));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
-        }*/
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        "Project Tasks fetched Successfully",
+                        tasks
+                ));
     }
 
     @GetMapping("/getUsers")
     public ResponseEntity<ApiResponse> getUsers(
-        @RequestParam Long projectId
+            @RequestParam Long projectId
     ) {
         List<User> users = projectService.getUsers(projectId);
-        return ResponseEntity.ok(new ApiResponse("Users assigned to project fetched Successfully", users));
-        /*try {
-            List<User> users = projectService.getUsers(projectId);
-            return ResponseEntity.ok(new ApiResponse("Users assigned to project fetched Successfully", users));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
-        }*/
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        "Users assigned to project fetched Successfully",
+                        users
+                ));
     }
 
     @GetMapping("/all")
     public ResponseEntity<ApiResponse> getAll() {
         List<Project> projects = projectService.getAll();
-        return ResponseEntity.ok(new ApiResponse("projects fetched Successfully", projects));
-        /*try {
-            List<Project> projects = projectService.getAll();
-            return ResponseEntity.ok(new ApiResponse("projects fetched Successfully", projects));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
-        }*/
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        "projects fetched Successfully",
+                        projects
+                ));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/all")
     public ResponseEntity<ApiResponse> deleteAll() {
         projectService.deleteAll();
-        return ResponseEntity.ok(new ApiResponse("projects deleted Successfully", null));
-        /*try {
-            projectService.deleteAll();
-            return ResponseEntity.ok(new ApiResponse("projects deleted Successfully", null));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
-        }*/
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        "projects deleted Successfully",
+                        null
+                ));
     }
 
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PutMapping("assignProjectToUser")
     public ResponseEntity<ApiResponse> assignProjectToUser(
-        @RequestParam Long projectId,
-        @RequestParam Long userId
+            @RequestParam Long projectId,
+            @RequestParam Long userId
     ) {
         projectService.assignProjectToUser(projectId, userId);
-        return ResponseEntity.ok(new ApiResponse("project assigned to user Successfully", null));
-        /*try {
-            projectService.assignProjectToUser(projectId, userId);
-            return ResponseEntity.ok(new ApiResponse("project assigned to user Successfully", null));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
-        } catch (AlreadyExistsException e) {
-            return ResponseEntity.status(NOT_ACCEPTABLE).body(new ApiResponse(e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
-        }*/
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        "project assigned to user Successfully",
+                        null
+                ));
     }
 }

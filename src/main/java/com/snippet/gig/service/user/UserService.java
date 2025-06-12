@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService implements IUserService{
+public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final TaskRepository taskRepository;
@@ -69,7 +69,7 @@ public class UserService implements IUserService{
     @Override
     public void deleteUser(Long id) throws ResourceNotFoundException {
         userRepository.findById(id).ifPresentOrElse(userRepository::delete, () -> {
-                throw new ResourceNotFoundException("User with id: " + id + " doesn't exist");
+            throw new ResourceNotFoundException("User with id: " + id + " doesn't exist");
         });
     }
 
@@ -84,7 +84,7 @@ public class UserService implements IUserService{
     public User getUserByUsername(String username) throws ResourceNotFoundException {
         User user = userRepository.findByUsername(username);
         return Optional.ofNullable(user)
-                .orElseThrow(() -> new ResourceNotFoundException("User with username:" + username +  " not present"));
+                .orElseThrow(() -> new ResourceNotFoundException("User with username:" + username + " not present"));
     }
 
     @Override

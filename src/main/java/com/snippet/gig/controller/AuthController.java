@@ -6,6 +6,7 @@ import com.snippet.gig.response.ApiResponse;
 import com.snippet.gig.response.JwtResponse;
 import com.snippet.gig.security.jwt.JwtUtils;
 import com.snippet.gig.utils.UserDetail;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("${api.prefix}/auth")
+@Tag(name = "Login APIs")
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
