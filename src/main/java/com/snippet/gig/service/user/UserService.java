@@ -4,7 +4,9 @@ import com.snippet.gig.dto.UserDto;
 import com.snippet.gig.entity.Task;
 import com.snippet.gig.entity.User;
 import com.snippet.gig.exception.AlreadyExistsException;
+import com.snippet.gig.exception.BadRequestException;
 import com.snippet.gig.exception.ResourceNotFoundException;
+import com.snippet.gig.repository.RoleRepository;
 import com.snippet.gig.repository.TaskRepository;
 import com.snippet.gig.repository.UserRepository;
 import com.snippet.gig.requestDto.CreateUserRequest;
@@ -27,13 +29,15 @@ public class UserService implements IUserService {
     private final TaskRepository taskRepository;
 
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+    private final RoleRepository roleRepository;
 
     @Autowired
     public UserService(UserRepository userRepository, ModelMapper modelMapper,
-                       TaskRepository taskRepository) {
+                       TaskRepository taskRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.taskRepository = taskRepository;
+        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -47,7 +51,16 @@ public class UserService implements IUserService {
                     user.setName(request.getName());
                     user.setDob(request.getDob());
                     user.setUsername(request.getUsername());
-                    // TODO(Lookout for this)
+
+                    for (String role : request.getRoles()) {
+                        if (role.equalsIgnoreCase("ADMIN")) {
+                            throw new BadRequestException("cannot assign ADMIN role during user creation");
+                        }
+                        roleRepository.findByName(role.toUpperCase()).ifPresentOrElse(user::addRole, () -> {
+                            throw new ResourceNotFoundException("Role not found: " + role);
+                        });
+                    }
+
                     return userRepository.save(user);
                 }).orElseThrow(() -> new AlreadyExistsException("User with this email or username already exists"));
     }
@@ -111,14 +124,14 @@ public class UserService implements IUserService {
     }*/
 
     @Override
-    public List<Task> getUserTasks(Long id) throws ResourceNotFoundException {
-        Optional<User> user = userRepository.findById(id);
+    public List<Task> getUserTasks(Long userId) throws ResourceNotFoundException {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
 
-        if (user.isPresent()) {
-            return user.get().getTasks();
-        } else {
-            throw new ResourceNotFoundException("User Not Found");
+        if (user.getTasks().isEmpty()) {
+            throw new ResourceNotFoundException("No Tasks Found");
         }
+
+        return user.getTasks();
     }
 
    /* @Override

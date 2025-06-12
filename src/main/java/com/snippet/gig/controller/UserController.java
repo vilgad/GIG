@@ -40,7 +40,7 @@ public class UserController {
                 ));
     }
 
-    @PostMapping("/public/user")
+    @PostMapping("/public/create-user")
     public ResponseEntity<ApiResponse> createUser(
             @RequestBody @Valid CreateUserRequest request
     ) {
@@ -53,7 +53,7 @@ public class UserController {
                 ));
     }
 
-    @PutMapping("/public/user")
+    @PutMapping("/public/update-user")
     public ResponseEntity<ApiResponse> updateUser(
             @RequestBody @Valid UpdateUserRequest request,
             @RequestParam Long userId
@@ -68,7 +68,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/private/user")
+    @DeleteMapping("/private/delete-user")
     public ResponseEntity<ApiResponse> deleteUser(
             @RequestParam Long userId
     ) {
@@ -80,17 +80,18 @@ public class UserController {
                 ));
     }
 
-    @GetMapping("/public/all")
+    @GetMapping("/public/get-all-users")
     public ResponseEntity<ApiResponse> getAllUsers() {
         List<User> users = userService.getAllUsers();
         return ResponseEntity.ok(
                 new ApiResponse(
                         "All Users Fetched successfully",
-                        users));
+                        users
+                ));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/private/all")
+    @DeleteMapping("/private/delete-all-users")
     public ResponseEntity<ApiResponse> deleteAllUsers() {
         userService.deleteAllUsers();
         return ResponseEntity.ok(
@@ -100,7 +101,7 @@ public class UserController {
                 ));
     }
 
-    @GetMapping("/public/getUserByEmail")
+    @GetMapping("/public/get-user-by-email")
     public ResponseEntity<ApiResponse> getUserByEmail(
             @RequestParam String email
     ) {
@@ -113,7 +114,7 @@ public class UserController {
                 ));
     }
 
-    @GetMapping("/public/getUserByUsername")
+    @GetMapping("/public/get-user-by-username")
     public ResponseEntity<ApiResponse> getUserByUsername(
             @RequestParam String username
     ) {
@@ -142,20 +143,20 @@ public class UserController {
         }*//*
     }*/
 
-    @GetMapping("/public/getUserTasks")
+    @GetMapping("/public/get-user-tasks")
     public ResponseEntity<ApiResponse> getUserTasks(
-            @RequestParam Long id
+            @RequestParam Long userId
     ) {
-        List<Task> tasks = userService.getUserTasks(id);
+        List<Task> tasks = userService.getUserTasks(userId);
         return ResponseEntity.ok(
                 new ApiResponse(
-                        "Users Tasks",
+                        "Users Tasks fetched successfully",
                         tasks
                 ));
     }
 
     @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
-    @DeleteMapping("/private/deleteAllUserTasks")
+    @DeleteMapping("/private/delete-all-user-tasks")
     public ResponseEntity<ApiResponse> deleteAllUserTasks(
             @RequestParam Long userId
     ) {
@@ -168,7 +169,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
-    @DeleteMapping("/private/deleteUserTask")
+    @DeleteMapping("/private/delete-user-task")
     public ResponseEntity<ApiResponse> deleteAllUserTasks(
             @RequestParam Long userId,
             @RequestParam Long taskId

@@ -1,5 +1,6 @@
 package com.snippet.gig.requestDto;
 
+import com.snippet.gig.entity.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -8,6 +9,7 @@ import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -20,8 +22,7 @@ public class CreateUserRequest {
     @NotEmpty(message = "name cannot be empty")
     private String name;
 
-    // TODO(Fix for dob)
-    @DateTimeFormat
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate dob;
 
     @NotEmpty(message = "username cannot be empty")
@@ -37,4 +38,6 @@ public class CreateUserRequest {
     @NotEmpty(message = "password cannot be empty")
     @Size(min = 8, message = "password must be of at-least 8 characters")
     private String password;
+
+    private List<String> roles;
 }
