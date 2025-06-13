@@ -1,5 +1,7 @@
 package com.snippet.gig.requestDto;
 
+import com.snippet.gig.enums.Priority;
+import com.snippet.gig.enums.Status;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -13,6 +15,6 @@ public class UpdateTaskRequest {
     private String title;
     private String description;
     private LocalDate dueDate;
-    private String priority;
-    private String status;
+    private Priority priority;
+    private Status status;
 }

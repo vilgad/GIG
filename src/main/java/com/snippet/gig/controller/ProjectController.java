@@ -29,7 +29,7 @@ public class ProjectController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/private/project")
+    @PostMapping("/private/create-project")
     public ResponseEntity<ApiResponse> createProject(
             @RequestBody CreateProjectRequest request
     ) {
@@ -37,13 +37,13 @@ public class ProjectController {
         ProjectDto projectDto = projectService.convertProjectToProjectDto(project);
         return ResponseEntity.ok(
                 new ApiResponse(
-                "Project Created Successfully",
-                projectDto
-        ));
+                        "Project Created Successfully",
+                        projectDto
+                ));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
-    @PutMapping("/private/project")
+    @PutMapping("/private/update-project")
     public ResponseEntity<ApiResponse> updateProject(
             @RequestBody UpdateProjectRequest request,
             @RequestParam Long id
@@ -56,7 +56,7 @@ public class ProjectController {
                 ));
     }
 
-    @GetMapping("/public/project")
+    @GetMapping("/public/get-project-by-id")
     public ResponseEntity<ApiResponse> getProjectById(
             @RequestParam Long id
     ) {
@@ -70,7 +70,7 @@ public class ProjectController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/private/project")
+    @DeleteMapping("/private/delete-project")
     public ResponseEntity<ApiResponse> deleteProject(
             @RequestParam Long id
     ) {
@@ -82,7 +82,7 @@ public class ProjectController {
                 ));
     }
 
-    @GetMapping("/public/getTasks")
+    @GetMapping("/public/get-tasks")
     public ResponseEntity<ApiResponse> getTasks(
             @RequestParam Long projectId
     ) {
@@ -94,7 +94,7 @@ public class ProjectController {
                 ));
     }
 
-    @GetMapping("/public/getUsers")
+    @GetMapping("/public/get-users")
     public ResponseEntity<ApiResponse> getUsers(
             @RequestParam Long projectId
     ) {
@@ -106,7 +106,7 @@ public class ProjectController {
                 ));
     }
 
-    @GetMapping("/public/all")
+    @GetMapping("/public/get-all-projects")
     public ResponseEntity<ApiResponse> getAll() {
         List<Project> projects = projectService.getAll();
         return ResponseEntity.ok(
@@ -117,7 +117,7 @@ public class ProjectController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/private/all")
+    @DeleteMapping("/private/delete-all-projects")
     public ResponseEntity<ApiResponse> deleteAll() {
         projectService.deleteAll();
         return ResponseEntity.ok(
@@ -128,7 +128,7 @@ public class ProjectController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
-    @PutMapping("/private/assignProjectToUser")
+    @PutMapping("/private/assign-project-to-user")
     public ResponseEntity<ApiResponse> assignProjectToUser(
             @RequestParam Long projectId,
             @RequestParam Long userId

@@ -32,6 +32,7 @@ public class Project {
     private LocalDate startDate;
     private LocalDate endDate;
 
+    @JsonIgnore
     @ToString.Exclude
     @OneToMany(orphanRemoval = true, mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Task> tasks = new ArrayList<>();

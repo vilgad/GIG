@@ -9,6 +9,7 @@ import com.snippet.gig.exception.ResourceNotFoundException;
 import com.snippet.gig.repository.RoleRepository;
 import com.snippet.gig.repository.TaskRepository;
 import com.snippet.gig.repository.UserRepository;
+import com.snippet.gig.requestDto.ChangePasswordRequest;
 import com.snippet.gig.requestDto.CreateUserRequest;
 import com.snippet.gig.requestDto.UpdateUserRequest;
 import com.snippet.gig.utils.UserDetail;
@@ -95,7 +96,7 @@ public class UserService implements IUserService {
 
     @Override
     public User getUserByUsername(String username) throws ResourceNotFoundException {
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username).get();
         return Optional.ofNullable(user)
                 .orElseThrow(() -> new ResourceNotFoundException("User with username:" + username + " not present"));
     }
@@ -132,16 +133,6 @@ public class UserService implements IUserService {
         }
 
         return user.getTasks();
-    }
-
-   /* @Override
-    public void updateUserRole(Long id, String role) throws UnsupportedOperationException {
-        // TODO()
-    }*/
-
-    @Override
-    public void changePassword(Long id, String username, String email, String password) throws UnsupportedOperationException {
-// TODO()
     }
 
     @Override
@@ -196,6 +187,22 @@ public class UserService implements IUserService {
     @Override
     public UserDto convertUserToDto(User user) {
         return modelMapper.map(user, UserDto.class);
+    }
+
+    @Override
+    public void changePassword(ChangePasswordRequest request) throws ResourceNotFoundException {
+        userRepository.findByUsername(request.getUsername()).ifPresentOrElse(
+                user -> {
+                    if (encoder.matches(request.getOldPassword(), user.getPassword())) {
+                        user.setPassword(encoder.encode(request.getNewPassword()));
+                        userRepository.save(user);
+                    } else {
+                        throw new BadRequestException("Old password is incorrect");
+                    }
+                }, () -> {
+                    throw new ResourceNotFoundException("User not found");
+                }
+        );
     }
 
     @Override

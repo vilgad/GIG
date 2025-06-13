@@ -1,19 +1,11 @@
 package com.snippet.gig.service.task;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import com.snippet.gig.service.user.UserService;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.snippet.gig.dto.TaskDto;
-import com.snippet.gig.dto.UserDto;
 import com.snippet.gig.entity.Project;
 import com.snippet.gig.entity.Task;
 import com.snippet.gig.entity.User;
+import com.snippet.gig.enums.Priority;
+import com.snippet.gig.enums.Status;
 import com.snippet.gig.exception.AlreadyExistsException;
 import com.snippet.gig.exception.ResourceNotFoundException;
 import com.snippet.gig.repository.ProjectRepository;
@@ -21,6 +13,12 @@ import com.snippet.gig.repository.TaskRepository;
 import com.snippet.gig.repository.UserRepository;
 import com.snippet.gig.requestDto.CreateTaskRequest;
 import com.snippet.gig.requestDto.UpdateTaskRequest;
+import com.snippet.gig.service.user.UserService;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class TaskService implements ITaskService {
@@ -32,11 +30,11 @@ public class TaskService implements ITaskService {
 
     @Autowired
     public TaskService(
-        TaskRepository taskRepository,
-        UserRepository userRepository,
-        ProjectRepository projectRepository,
-        UserService userService,
-        ModelMapper modelMapper
+            TaskRepository taskRepository,
+            UserRepository userRepository,
+            ProjectRepository projectRepository,
+            UserService userService,
+            ModelMapper modelMapper
     ) {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
@@ -51,8 +49,8 @@ public class TaskService implements ITaskService {
         task.setTitle(request.getTitle());
         task.setDescription(request.getDescription());
         task.setDueDate(request.getDueDate());
-        task.setPriority(request.getPriority());
-        task.setStatus(request.getStatus());
+        task.setPriority(Priority.fromValue(request.getPriority().getValue()));
+        task.setStatus(Status.fromValue("not started"));
 
         taskRepository.save(task);
 
@@ -60,14 +58,28 @@ public class TaskService implements ITaskService {
     }
 
     @Override
-    public void updateTask(UpdateTaskRequest request, Long id) throws ResourceNotFoundException {
-        taskRepository.findById(id).ifPresentOrElse(
+    public void updateTask(UpdateTaskRequest request, Long taskId) throws ResourceNotFoundException {
+        taskRepository.findById(taskId).ifPresentOrElse(
                 t -> {
-                    t.setDueDate(request.getDueDate());
-                    t.setDescription(request.getDescription());
-                    t.setPriority(request.getPriority());
-                    t.setStatus(request.getStatus());
-                    t.setTitle(request.getTitle());
+                    if (request.getPriority() != null) {
+                        t.setPriority(Priority.fromValue(request.getPriority().getValue()));
+                    }
+
+                    if (request.getStatus() != null) {
+                        t.setStatus(Status.fromValue(request.getStatus().getValue()));
+                    }
+
+                    if (request.getDueDate() != null) {
+                        t.setDueDate(request.getDueDate());
+                    }
+
+                    if (request.getDescription() != null) {
+                        t.setDescription(request.getDescription());
+                    }
+
+                    if (request.getTitle() != null) {
+                        t.setTitle(request.getTitle());
+                    }
 
                     taskRepository.save(t);
                 }, () -> {
@@ -76,15 +88,15 @@ public class TaskService implements ITaskService {
     }
 
     @Override
-    public Task getTaskById(Long id) throws ResourceNotFoundException {
-        return taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task Not found"));
+    public Task getTaskById(Long taskId) throws ResourceNotFoundException {
+        return taskRepository.findById(taskId).orElseThrow(() -> new ResourceNotFoundException("Task Not found"));
     }
 
     @Override
-    public void deleteTask(Long id) throws ResourceNotFoundException {
-        taskRepository.findById(id).ifPresentOrElse(task -> {
-//            TODO(only person with special access like admin or manager can remove)
-            taskRepository.deleteAllUsersFromTask(id);
+    public void deleteTask(Long taskId) throws ResourceNotFoundException {
+        taskRepository.findById(taskId).ifPresentOrElse(task -> {
+            taskRepository.deleteAllUsersFromTask(taskId);
+//            taskRepository.deleteById(taskId);
         }, () -> {
             throw new ResourceNotFoundException("Task not present");
         });
@@ -116,25 +128,26 @@ public class TaskService implements ITaskService {
         } else {
             throw new ResourceNotFoundException("Project is not assigned");
         }
-
     }
 
     @Override
-    public void updateStatus(Long id, String status) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateStatus'");
+    public void updateStatus(Long taskId, String status) {
+        taskRepository.findById(taskId).ifPresentOrElse(task -> {
+            task.setStatus(Status.fromValue(status));
+            taskRepository.save(task);
+        }, () -> {
+            throw new ResourceNotFoundException("Task not found");
+        });
     }
 
     @Override
-    public void updatePriority(Long id, String priority) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updatePriority'");
-    }
-
-    @Override
-    public void changeDueDate(Long id, String dueDate) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'changeDueDate'");
+    public void updatePriority(Long taskId, String priority) {
+        taskRepository.findById(taskId).ifPresentOrElse(task -> {
+            task.setPriority(Priority.fromValue(priority));
+            taskRepository.save(task);
+        }, () -> {
+            throw new ResourceNotFoundException("Task not found");
+        });
     }
 
     @Override

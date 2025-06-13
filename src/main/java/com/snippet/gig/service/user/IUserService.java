@@ -5,8 +5,10 @@ import com.snippet.gig.entity.Task;
 import com.snippet.gig.entity.User;
 import com.snippet.gig.exception.AlreadyExistsException;
 import com.snippet.gig.exception.ResourceNotFoundException;
+import com.snippet.gig.requestDto.ChangePasswordRequest;
 import com.snippet.gig.requestDto.CreateUserRequest;
 import com.snippet.gig.requestDto.UpdateUserRequest;
+import jakarta.validation.Valid;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
@@ -35,8 +37,6 @@ public interface IUserService extends UserDetailsService {
     // Other Update Operations
 //    void updateUserRole(Long id, String role) throws UnsupportedOperationException;
 
-    void changePassword(Long id, String username, String email, String password) throws UnsupportedOperationException ;
-
     // Other Delete Operations
     void deleteUserTask(Long userId, Long taskId) throws ResourceNotFoundException;
 
@@ -48,4 +48,6 @@ public interface IUserService extends UserDetailsService {
 
     // DTO method
     UserDto convertUserToDto(User user);
+
+    void changePassword(@Valid ChangePasswordRequest request) throws ResourceNotFoundException;
 }

@@ -1,6 +1,7 @@
 package com.snippet.gig.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.snippet.gig.enums.Roles;
 import jakarta.persistence.*;
 import lombok.*;
 

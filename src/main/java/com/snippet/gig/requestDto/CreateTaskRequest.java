@@ -1,5 +1,6 @@
 package com.snippet.gig.requestDto;
 
+import com.snippet.gig.enums.Priority;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -22,6 +23,5 @@ public class CreateTaskRequest {
     @NotEmpty(message = "dueDate cannot be empty")
     private LocalDate dueDate;
 
-    private String priority;
-    private String status;
+    private Priority priority;
 }

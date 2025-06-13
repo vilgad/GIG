@@ -1,6 +1,8 @@
 package com.snippet.gig.advice;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.snippet.gig.exception.AlreadyExistsException;
+import com.snippet.gig.exception.BadRequestException;
 import com.snippet.gig.exception.ResourceNotFoundException;
 import com.snippet.gig.response.ErrorResponse;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +48,14 @@ public class ApplicationExceptionHandler {
         return ResponseEntity
                 .status(FORBIDDEN)
                 .body(new ErrorResponse(FORBIDDEN.value(),exception.getMessage()));
+    }
+
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler({BadRequestException.class})
+    public ResponseEntity<ErrorResponse> handleBadRequest(BadRequestException exception) {
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(new ErrorResponse(BAD_REQUEST.value(),exception.getMessage()));
     }
 
     @ResponseStatus(INTERNAL_SERVER_ERROR)

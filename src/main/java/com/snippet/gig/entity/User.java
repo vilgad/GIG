@@ -72,6 +72,15 @@ public class User {
         this.password = password;
     }
 
+    public User(String name, LocalDate dob, String username, String email, String password, Collection<Role> roles) {
+        this.name = name;
+        this.dob = dob;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
+    }
+
     public void addTask(Task task) {
         if (task != null) {
             tasks.add(task);

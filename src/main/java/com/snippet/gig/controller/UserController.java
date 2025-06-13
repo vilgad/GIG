@@ -3,6 +3,7 @@ package com.snippet.gig.controller;
 import com.snippet.gig.dto.UserDto;
 import com.snippet.gig.entity.Task;
 import com.snippet.gig.entity.User;
+import com.snippet.gig.requestDto.ChangePasswordRequest;
 import com.snippet.gig.requestDto.CreateUserRequest;
 import com.snippet.gig.requestDto.UpdateUserRequest;
 import com.snippet.gig.response.ApiResponse;
@@ -178,6 +179,17 @@ public class UserController {
         return ResponseEntity.ok(
                 new ApiResponse(
                         "Task removed Successfully",
+                        null
+                ));
+    }
+
+    @PutMapping("/public/change-password")
+    public ResponseEntity<ApiResponse> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
+        userService.changePassword(request);
+
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        "Password changed Successfully",
                         null
                 ));
     }

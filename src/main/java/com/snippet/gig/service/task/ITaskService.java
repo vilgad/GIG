@@ -15,9 +15,9 @@ public interface ITaskService {
     // basic crud operations
     Task createTask(CreateTaskRequest task);
 
-    void updateTask(UpdateTaskRequest task, Long id) throws ResourceNotFoundException;
+    void updateTask(UpdateTaskRequest task, Long taskId) throws ResourceNotFoundException;
 
-    Task getTaskById(Long id) throws ResourceNotFoundException;
+    Task getTaskById(Long taskId) throws ResourceNotFoundException;
 
     void deleteTask(Long id) throws ResourceNotFoundException;
 
@@ -29,11 +29,9 @@ public interface ITaskService {
     List<Task> getAllTasks() throws ResourceNotFoundException;
 
     // Other Update Operations
-    void updateStatus(Long id, String status);
+    void updateStatus(Long taskId, String status);
 
-    void updatePriority(Long id, String priority);
-
-    void changeDueDate(Long id, String dueDate);
+    void updatePriority(Long taskId, String priority);
 
     void assignTaskToUser(Long taskId, Long userId) throws ResourceNotFoundException, AlreadyExistsException;
 

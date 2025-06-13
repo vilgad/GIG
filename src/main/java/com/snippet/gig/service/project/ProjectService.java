@@ -5,6 +5,7 @@ import com.snippet.gig.entity.Project;
 import com.snippet.gig.entity.Task;
 import com.snippet.gig.entity.User;
 import com.snippet.gig.exception.AlreadyExistsException;
+import com.snippet.gig.exception.BadRequestException;
 import com.snippet.gig.exception.ResourceNotFoundException;
 import com.snippet.gig.repository.ProjectRepository;
 import com.snippet.gig.repository.TaskRepository;
@@ -42,6 +43,11 @@ public class ProjectService implements IProjectService {
                     Project p = new Project();
                     p.setName(request.getName());
                     p.setDescription(request.getDescription());
+
+                    if (request.getStartDate() == null || request.getEndDate() == null) {
+                        throw new BadRequestException("Start date and end date cannot be null");
+                    }
+
                     p.setStartDate(request.getStartDate());
                     p.setEndDate(request.getEndDate());
 
@@ -63,15 +69,20 @@ public class ProjectService implements IProjectService {
         projectRepository.findById(id)
                 .ifPresentOrElse(
                         existingproject -> {
-                            existingproject.setDescription(request.getDescription());
-                            existingproject.setStartDate(request.getStartDate());
-                            existingproject.setEndDate(request.getEndDate());
+                            if (request.getDescription() != null) {
+                                existingproject.setDescription(request.getDescription());
+                            }
+                            if (request.getStartDate() != null) {
+                                existingproject.setStartDate(request.getStartDate());
+                            }
+                            if (request.getEndDate() != null) {
+                                existingproject.setEndDate(request.getEndDate());
+                            }
 
                             projectRepository.save(existingproject);
                         }, () -> {
                             throw new ResourceNotFoundException("This project does not exists");
                         });
-
     }
 
     @Override
@@ -88,24 +99,22 @@ public class ProjectService implements IProjectService {
 
     @Override
     public List<Task> getTasks(Long projectId) throws ResourceNotFoundException {
-        Optional<Project> project = projectRepository.findById(projectId);
+        Project project = projectRepository.findById(projectId).orElseThrow(() -> new ResourceNotFoundException("Project does not exist"));
 
-        if (project.isPresent()) {
-            return project.get().getTasks();
-        } else {
-            throw new ResourceNotFoundException("Project does not exist");
+        if (project.getTasks().isEmpty()) {
+            throw new ResourceNotFoundException("No Tasks FOund for this project");
         }
+        return project.getTasks();
     }
 
     @Override
     public List<User> getUsers(Long projectId) throws ResourceNotFoundException {
-        Optional<Project> project = projectRepository.findById(projectId);
+        Project project = projectRepository.findById(projectId).orElseThrow(() -> new ResourceNotFoundException("Project does not exist"));
 
-        if (project.isPresent()) {
-            return project.get().getUsers();
-        } else {
-            throw new ResourceNotFoundException("Project does not exist");
+        if (project.getUsers().isEmpty()) {
+            throw new ResourceNotFoundException("No users FOund for this project");
         }
+        return project.getUsers();
     }
 
     @Override

@@ -1,6 +1,9 @@
 package com.snippet.gig.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.snippet.gig.enums.Priority;
+import com.snippet.gig.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,23 +26,28 @@ public class Task {
 
     private String title;
     private String description;
-    // TODO(Date)
     private LocalDate dueDate;
-    // TODO(ENUM)
-    private String priority;
-    private String status;
+
+    private Priority priority;
+    private Status status;
 
     @JsonIgnore
     @ToString.Exclude
     @ManyToMany(mappedBy = "tasks", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<User> users;
 
+//    @JsonProperty(value = "project")
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "project_id")
     private Project project;
 
-    public Task(String title, String description, LocalDate dueDate, String priority, String status) {
+    // jo getter present hote hai whi json response mei aate hai
+    public String getProjectName() {
+        return project != null ? project.getName() : null;
+    }
+
+    public Task(String title, String description, LocalDate dueDate, Priority priority, Status status) {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;

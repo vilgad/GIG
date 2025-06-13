@@ -23,6 +23,7 @@ public interface IProjectService {
 
     // Other Read Operations
     List<Task> getTasks(Long projectId) throws ResourceNotFoundException;
+
     List<User> getUsers(Long projectId) throws ResourceNotFoundException;
 
     List<Project> getAll();
