@@ -1,6 +1,7 @@
 package com.snippet.gig.service.user;
 
 import com.snippet.gig.dto.UserDto;
+import com.snippet.gig.entity.Project;
 import com.snippet.gig.entity.Task;
 import com.snippet.gig.entity.User;
 import com.snippet.gig.exception.AlreadyExistsException;
@@ -203,6 +204,17 @@ public class UserService implements IUserService {
                     throw new ResourceNotFoundException("User not found");
                 }
         );
+    }
+
+    @Override
+    public List<Project> getUserProjects(Long userId) throws ResourceNotFoundException {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
+
+        if (user.getProjects().isEmpty()) {
+            throw new ResourceNotFoundException("No projects Found");
+        }
+
+        return user.getProjects();
     }
 
     @Override

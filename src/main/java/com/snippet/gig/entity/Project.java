@@ -39,7 +39,7 @@ public class Project {
 
     @JsonIgnore
     @ToString.Exclude
-    @OneToMany(mappedBy = "project", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(mappedBy = "projects", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<User> users = new ArrayList<>();
 
     public Project(String name, String description, LocalDate startDate, LocalDate endDate) {

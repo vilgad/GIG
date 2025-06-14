@@ -23,9 +23,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 //    List<User> findByRole(String role);
 
     // solved error by realising User is treated as an entity
-    @Transactional
+    /*@Transactional
     @Modifying
     @Query("UPDATE User u SET u.project = null WHERE u.project.id = :projectId ")
-    void setProjectIdNull(@Param("projectId") Long projectId);
+    void setProjectIdNull(@Param("projectId") Long projectId);*/
 
 }

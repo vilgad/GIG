@@ -1,6 +1,7 @@
 package com.snippet.gig.service.user;
 
 import com.snippet.gig.dto.UserDto;
+import com.snippet.gig.entity.Project;
 import com.snippet.gig.entity.Task;
 import com.snippet.gig.entity.User;
 import com.snippet.gig.exception.AlreadyExistsException;
@@ -50,4 +51,6 @@ public interface IUserService extends UserDetailsService {
     UserDto convertUserToDto(User user);
 
     void changePassword(@Valid ChangePasswordRequest request) throws ResourceNotFoundException;
+
+    List<Project> getUserProjects(Long userId) throws ResourceNotFoundException;
 }

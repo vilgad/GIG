@@ -91,7 +91,9 @@ public class ProjectService implements IProjectService {
     @Override
     public void deleteProject(Long id) throws ResourceNotFoundException {
         projectRepository.findById(id).ifPresentOrElse(project -> {
-                    userRepository.setProjectIdNull(id);
+//                    userRepository.setProjectIdNull(id);
+                    project.setUsers(null);
+                    projectRepository.save(project);
                     taskRepository.deleteProjectTasks(id);
                     projectRepository.deleteProject(id);
                 },
@@ -154,7 +156,7 @@ public class ProjectService implements IProjectService {
                                             throw new AlreadyExistsException(
                                                     "This project is already assigned to the user");
                                         }
-                                        user.setProject(project);
+                                        user.getProjects().add(project);
                                         project.addUser(user);
                                         projectRepository.save(project);
                                         userRepository.save(user);

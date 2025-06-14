@@ -1,6 +1,7 @@
 package com.snippet.gig.controller;
 
 import com.snippet.gig.dto.UserDto;
+import com.snippet.gig.entity.Project;
 import com.snippet.gig.entity.Task;
 import com.snippet.gig.entity.User;
 import com.snippet.gig.requestDto.ChangePasswordRequest;
@@ -153,6 +154,18 @@ public class UserController {
                 new ApiResponse(
                         "Users Tasks fetched successfully",
                         tasks
+                ));
+    }
+
+    @GetMapping("/public/get-user-projects")
+    public ResponseEntity<ApiResponse> getUserProjects(
+            @RequestParam Long userId
+    ) {
+        List<Project> projects = userService.getUserProjects(userId);
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        "Users Projects fetched successfully",
+                        projects
                 ));
     }
 
