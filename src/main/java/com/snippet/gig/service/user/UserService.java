@@ -4,6 +4,7 @@ import com.snippet.gig.dto.UserDto;
 import com.snippet.gig.entity.Project;
 import com.snippet.gig.entity.Task;
 import com.snippet.gig.entity.User;
+import com.snippet.gig.enums.Status;
 import com.snippet.gig.exception.AlreadyExistsException;
 import com.snippet.gig.exception.BadRequestException;
 import com.snippet.gig.exception.ResourceNotFoundException;
@@ -21,7 +22,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -215,6 +218,21 @@ public class UserService implements IUserService {
         }
 
         return user.getProjects();
+    }
+
+    @Override
+    public Map<Status, List<Task>> getKanbanBoard(Long userId) throws ResourceNotFoundException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User with id: " + userId + " not found"));
+
+        Map<Status, List<Task>> kanbanBoard = new HashMap<>();
+
+        for (Status status : Status.values()) {
+            List<Task> tasksByStatus = taskRepository.findAllByUsersIdAndStatus(user.getId(), status);
+            kanbanBoard.put(status, tasksByStatus);
+        }
+
+        return kanbanBoard;
     }
 
     @Override

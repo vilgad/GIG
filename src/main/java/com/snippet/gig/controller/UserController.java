@@ -4,6 +4,7 @@ import com.snippet.gig.dto.UserDto;
 import com.snippet.gig.entity.Project;
 import com.snippet.gig.entity.Task;
 import com.snippet.gig.entity.User;
+import com.snippet.gig.enums.Status;
 import com.snippet.gig.requestDto.ChangePasswordRequest;
 import com.snippet.gig.requestDto.CreateUserRequest;
 import com.snippet.gig.requestDto.UpdateUserRequest;
@@ -17,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("${api.prefix}/users")
@@ -166,6 +168,18 @@ public class UserController {
                 new ApiResponse(
                         "Users Projects fetched successfully",
                         projects
+                ));
+    }
+
+    @GetMapping("/public/get-kanban-board")
+    public ResponseEntity<ApiResponse> getKanbanBoard(
+            @RequestParam Long userId
+    ) {
+        Map<Status, List<Task>> kanbanBoard = userService.getKanbanBoard(userId);
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        "kanban board generated successfully",
+                        kanbanBoard
                 ));
     }
 

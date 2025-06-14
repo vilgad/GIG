@@ -2,6 +2,7 @@ package com.snippet.gig.repository;
 
 import com.snippet.gig.entity.Project;
 import com.snippet.gig.entity.Task;
+import com.snippet.gig.entity.User;
 import com.snippet.gig.enums.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -28,4 +29,12 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     void deleteProjectTasks(@Param("projectId") Long projectId);
 
     List<Task> findAllByProjectAndStatus(Project project, Status status);
+
+    List<Task> findAllByUsersIdAndStatus(Long userId, Status status);
+
+    @Query("SELECT t FROM Task t JOIN t.users u WHERE u.id = :userId AND t.status = :status")
+    List<Task> findAllByUserIdAndStatus(
+            @Param("userId") Long userId,
+            @Param("status") Status status
+    );
 }

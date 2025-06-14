@@ -4,6 +4,7 @@ import com.snippet.gig.dto.UserDto;
 import com.snippet.gig.entity.Project;
 import com.snippet.gig.entity.Task;
 import com.snippet.gig.entity.User;
+import com.snippet.gig.enums.Status;
 import com.snippet.gig.exception.AlreadyExistsException;
 import com.snippet.gig.exception.ResourceNotFoundException;
 import com.snippet.gig.requestDto.ChangePasswordRequest;
@@ -13,6 +14,7 @@ import jakarta.validation.Valid;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IUserService extends UserDetailsService {
     // basic crud operations
@@ -53,4 +55,6 @@ public interface IUserService extends UserDetailsService {
     void changePassword(@Valid ChangePasswordRequest request) throws ResourceNotFoundException;
 
     List<Project> getUserProjects(Long userId) throws ResourceNotFoundException;
+
+    Map<Status, List<Task>> getKanbanBoard(Long userId) throws ResourceNotFoundException;
 }
