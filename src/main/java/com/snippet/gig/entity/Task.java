@@ -1,6 +1,5 @@
 package com.snippet.gig.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.snippet.gig.enums.Priority;
 import com.snippet.gig.enums.Status;
@@ -28,8 +27,11 @@ public class Task {
     private String description;
     private LocalDate dueDate;
 
-    private Priority priority;
+    @Enumerated(EnumType.STRING)
     private Status status;
+
+    @Enumerated(EnumType.STRING)
+    private Priority priority;
 
     @JsonIgnore
     @ToString.Exclude

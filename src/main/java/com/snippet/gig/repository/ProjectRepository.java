@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 public interface ProjectRepository extends JpaRepository<Project, Long> {
     boolean existsByName(String name);
 
@@ -14,4 +16,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     @Modifying
     @Query("DELETE FROM Project t WHERE t.id = :projectId")
     void deleteProject(@Param("projectId") Long projectId);
+
+    Optional<Project> findByName(String projectName);
 }

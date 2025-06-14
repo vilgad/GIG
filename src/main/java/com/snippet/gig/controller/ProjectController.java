@@ -4,6 +4,7 @@ import com.snippet.gig.dto.ProjectDto;
 import com.snippet.gig.entity.Project;
 import com.snippet.gig.entity.Task;
 import com.snippet.gig.entity.User;
+import com.snippet.gig.enums.Status;
 import com.snippet.gig.requestDto.CreateProjectRequest;
 import com.snippet.gig.requestDto.UpdateProjectRequest;
 import com.snippet.gig.response.ApiResponse;
@@ -15,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -138,6 +140,18 @@ public class ProjectController {
                 new ApiResponse(
                         "project assigned to user Successfully",
                         null
+                ));
+    }
+
+    @GetMapping("/public/get-kanban-board")
+    public ResponseEntity<ApiResponse> getKanbanBoard(
+            @RequestParam String projectName) {
+        Map<Status, List<Task>> data = projectService.getKanbanBoard(projectName);
+
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        "Success",
+                        data
                 ));
     }
 }

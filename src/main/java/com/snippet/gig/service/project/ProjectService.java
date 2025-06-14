@@ -4,6 +4,7 @@ import com.snippet.gig.dto.ProjectDto;
 import com.snippet.gig.entity.Project;
 import com.snippet.gig.entity.Task;
 import com.snippet.gig.entity.User;
+import com.snippet.gig.enums.Status;
 import com.snippet.gig.exception.AlreadyExistsException;
 import com.snippet.gig.exception.BadRequestException;
 import com.snippet.gig.exception.ResourceNotFoundException;
@@ -16,7 +17,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -167,5 +170,23 @@ public class ProjectService implements IProjectService {
     @Override
     public ProjectDto convertProjectToProjectDto(Project project) {
         return modelMapper.map(project, ProjectDto.class);
+    }
+
+    @Override
+    public Map<Status, List<Task>> getKanbanBoard(String projectName) throws ResourceNotFoundException {
+        Project project = projectRepository.findByName(projectName)
+                .orElseThrow(() -> new ResourceNotFoundException("Project with name: " + projectName + " not found"));
+
+        Map<Status, List<Task>> kanbanBoard = new HashMap<>();
+
+        for (Status status : Status.values()) {
+            List<Task> tasksByStatus = taskRepository.findAllByProjectAndStatus(project, status);
+            kanbanBoard.put(status, tasksByStatus);
+        }
+
+        return kanbanBoard;
+//        return taskRepository.findAllByProject(project)
+//                .stream()
+//                .collect(Collectors.groupingBy(Task::getStatus));
     }
 }

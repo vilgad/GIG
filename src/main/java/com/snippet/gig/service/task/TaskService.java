@@ -7,6 +7,7 @@ import com.snippet.gig.entity.User;
 import com.snippet.gig.enums.Priority;
 import com.snippet.gig.enums.Status;
 import com.snippet.gig.exception.AlreadyExistsException;
+import com.snippet.gig.exception.BadRequestException;
 import com.snippet.gig.exception.ResourceNotFoundException;
 import com.snippet.gig.repository.ProjectRepository;
 import com.snippet.gig.repository.TaskRepository;
@@ -50,7 +51,7 @@ public class TaskService implements ITaskService {
         task.setDescription(request.getDescription());
         task.setDueDate(request.getDueDate());
         task.setPriority(Priority.fromValue(request.getPriority().getValue()));
-        task.setStatus(Status.fromValue("not started"));
+        task.setStatus(Status.fromValue("to do"));
 
         taskRepository.save(task);
 
@@ -133,8 +134,14 @@ public class TaskService implements ITaskService {
     @Override
     public void updateStatus(Long taskId, String status) {
         taskRepository.findById(taskId).ifPresentOrElse(task -> {
-            task.setStatus(Status.fromValue(status));
-            taskRepository.save(task);
+            if (!status.equals("to do")) {
+                if (task.getProject() != null) {
+                    task.setStatus(Status.fromValue(status));
+                    taskRepository.save(task);
+                } else {
+                    throw new BadRequestException("No project assigned to this task, cannot update status");
+                }
+            }
         }, () -> {
             throw new ResourceNotFoundException("Task not found");
         });

@@ -7,10 +7,11 @@ import lombok.Getter;
 
 @Getter
 public enum Status {
-    NOT_STARTED("Not Started"),
+    TODO("To Do"),
     IN_PROGRESS("In Progress"),
     COMPLETED("Completed"),
-    ON_HOLD("On Hold");
+    REVIEW("Review"),
+    Backlog("Backlog"),;
 
     private final String value;
 
@@ -26,7 +27,7 @@ public enum Status {
     @JsonCreator
     public static Status fromValue(String value) {
         if (value == null || value.isBlank()) {  // Check for null first
-            return Status.NOT_STARTED; // Default value if none provided
+            return Status.TODO; // Default value if none provided
         }
         for (Status status : Status.values()) {
             if (status.value.equalsIgnoreCase(value)) {

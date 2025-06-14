@@ -4,12 +4,14 @@ import com.snippet.gig.dto.ProjectDto;
 import com.snippet.gig.entity.Project;
 import com.snippet.gig.entity.Task;
 import com.snippet.gig.entity.User;
+import com.snippet.gig.enums.Status;
 import com.snippet.gig.exception.AlreadyExistsException;
 import com.snippet.gig.exception.ResourceNotFoundException;
 import com.snippet.gig.requestDto.CreateProjectRequest;
 import com.snippet.gig.requestDto.UpdateProjectRequest;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IProjectService {
     // basic crud operations
@@ -36,4 +38,6 @@ public interface IProjectService {
     // Other Delete Operations
 
     ProjectDto convertProjectToProjectDto(Project project);
+
+    Map<Status, List<Task>> getKanbanBoard(String projectName) throws ResourceNotFoundException;
 }
