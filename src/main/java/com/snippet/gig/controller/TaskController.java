@@ -1,6 +1,7 @@
 package com.snippet.gig.controller;
 
 import com.snippet.gig.dto.TaskDto;
+import com.snippet.gig.entity.Comment;
 import com.snippet.gig.entity.Project;
 import com.snippet.gig.entity.Task;
 import com.snippet.gig.entity.User;

@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -38,11 +39,15 @@ public class Task {
     @ManyToMany(mappedBy = "tasks", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<User> users;
 
-//    @JsonProperty(value = "project")
+    //    @JsonProperty(value = "project")
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "project_id")
     private Project project;
+
+    @JsonIgnore
+    @OneToMany
+    List<Comment> comments = new ArrayList<>();
 
     // jo getter present hote hai whi json response mei aate hai
     public String getProjectName() {

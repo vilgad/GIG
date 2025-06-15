@@ -69,6 +69,11 @@ public class User {
     )
     private List<Project> projects;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @OneToMany
+    @ToString.Exclude
+    List<Comment> comments = new ArrayList<>();
+
     public User(String name, LocalDate dob, String username, String email, String password) {
         this.name = name;
         this.dob = dob;

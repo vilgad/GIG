@@ -25,7 +25,6 @@ import java.util.Map;
 public class ProjectController {
     private final IProjectService projectService;
 
-    @Autowired
     public ProjectController(IProjectService projectService) {
         this.projectService = projectService;
     }

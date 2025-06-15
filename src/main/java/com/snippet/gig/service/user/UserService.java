@@ -1,6 +1,7 @@
 package com.snippet.gig.service.user;
 
 import com.snippet.gig.dto.UserDto;
+import com.snippet.gig.entity.Comment;
 import com.snippet.gig.entity.Project;
 import com.snippet.gig.entity.Task;
 import com.snippet.gig.entity.User;
