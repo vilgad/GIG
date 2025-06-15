@@ -1,5 +1,6 @@
 package com.snippet.gig.service.email;
 
+import com.snippet.gig.exception.EmailDeliveringException;
 import com.snippet.gig.requestDto.SendEmailRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
@@ -25,7 +26,7 @@ public class EmailService implements IEmailService {
             mail.setText(request.getBody());
             javaMailSender.send(mail);
         } catch (Exception e) {
-            log.error("Error in sending mail", e);
+            throw new EmailDeliveringException("Facing some problems while sending email, Try again later");
         }
     }
 }

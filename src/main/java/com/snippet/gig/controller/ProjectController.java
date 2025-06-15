@@ -78,7 +78,7 @@ public class ProjectController {
         projectService.deleteProject(id);
         return ResponseEntity.ok(
                 new ApiResponse(
-                        "Project deleted Successfully",
+                        "Project deleted Successfully! Emails will be sent to all users assigned to this project",
                         null
                 ));
     }
@@ -137,7 +137,7 @@ public class ProjectController {
         projectService.assignProjectToUser(projectId, userId);
         return ResponseEntity.ok(
                 new ApiResponse(
-                        "project assigned to user Successfully",
+                        "project assigned to user Successfully! user will receive an email from team",
                         null
                 ));
     }

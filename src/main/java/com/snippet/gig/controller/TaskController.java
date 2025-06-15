@@ -145,7 +145,7 @@ public class TaskController {
         taskService.assignTaskToUser(taskId, userId);
         return ResponseEntity.ok(
                 new ApiResponse(
-                        "Success",
+                        "Success! User will be notified via email",
                         null
                 ));
     }

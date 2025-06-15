@@ -1,7 +1,6 @@
 package com.snippet.gig.service.user;
 
 import com.snippet.gig.dto.UserDto;
-import com.snippet.gig.entity.Comment;
 import com.snippet.gig.entity.Project;
 import com.snippet.gig.entity.Task;
 import com.snippet.gig.entity.User;
@@ -14,7 +13,9 @@ import com.snippet.gig.repository.TaskRepository;
 import com.snippet.gig.repository.UserRepository;
 import com.snippet.gig.requestDto.ChangePasswordRequest;
 import com.snippet.gig.requestDto.CreateUserRequest;
+import com.snippet.gig.requestDto.SendEmailRequest;
 import com.snippet.gig.requestDto.UpdateUserRequest;
+import com.snippet.gig.service.email.IEmailService;
 import com.snippet.gig.utils.UserDetail;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ import java.util.Optional;
 
 @Service
 public class UserService implements IUserService {
+    private final IEmailService emailService;
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final TaskRepository taskRepository;
@@ -38,8 +40,9 @@ public class UserService implements IUserService {
     private final RoleRepository roleRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository, ModelMapper modelMapper,
+    public UserService(IEmailService emailService, UserRepository userRepository, ModelMapper modelMapper,
                        TaskRepository taskRepository, RoleRepository roleRepository) {
+        this.emailService = emailService;
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.taskRepository = taskRepository;
@@ -67,6 +70,13 @@ public class UserService implements IUserService {
                         });
                     }
 
+                    // Send welcome email
+                    SendEmailRequest emailRequest = new SendEmailRequest();
+                    emailRequest.setTo(user.getEmail());
+                    emailRequest.setSubject("Welcome to Our Gig Platform");
+                    emailRequest.setBody("Hello " + user.getName() + ",\n\nWelcome to our Gig platform! We're excited to have you on board.\n\nBest regards,\nGig Team");
+                    emailService.sendEmail(emailRequest);
+
                     return userRepository.save(user);
                 }).orElseThrow(() -> new AlreadyExistsException("User with this email or username already exists"));
     }
@@ -87,7 +97,16 @@ public class UserService implements IUserService {
 
     @Override
     public void deleteUser(Long id) throws ResourceNotFoundException {
-        userRepository.findById(id).ifPresentOrElse(userRepository::delete, () -> {
+        userRepository.findById(id).ifPresentOrElse(user -> {
+            userRepository.delete(user);
+
+            // Send email notification
+            SendEmailRequest emailRequest = new SendEmailRequest();
+            emailRequest.setTo(user.getEmail());
+            emailRequest.setSubject("Account deleted Successfully");
+            emailRequest.setBody("Hello " + user.getName() + ",\n\nYour account has been deleted successfully.\nIf you did not request this, please contact support immediately.\n\nBest regards,\nGig Team");
+            emailService.sendEmail(emailRequest);
+        }, () -> {
             throw new ResourceNotFoundException("User with id: " + id + " doesn't exist");
         });
     }
@@ -200,6 +219,13 @@ public class UserService implements IUserService {
                 user -> {
                     if (encoder.matches(request.getOldPassword(), user.getPassword())) {
                         user.setPassword(encoder.encode(request.getNewPassword()));
+
+                        // Send email notification
+                        SendEmailRequest emailRequest = new SendEmailRequest();
+                        emailRequest.setTo(user.getEmail());
+                        emailRequest.setSubject("Password Changed Successfully");
+                        emailRequest.setBody("Hello " + user.getName() + ",\n\nYour password has been changed successfully.\nIf you did not request this change, please contact support immediately.\n\nBest regards,\nGig Team");
+                        emailService.sendEmail(emailRequest);
                         userRepository.save(user);
                     } else {
                         throw new BadRequestException("Old password is incorrect");

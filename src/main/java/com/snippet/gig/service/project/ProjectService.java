@@ -12,7 +12,9 @@ import com.snippet.gig.repository.ProjectRepository;
 import com.snippet.gig.repository.TaskRepository;
 import com.snippet.gig.repository.UserRepository;
 import com.snippet.gig.requestDto.CreateProjectRequest;
+import com.snippet.gig.requestDto.SendEmailRequest;
 import com.snippet.gig.requestDto.UpdateProjectRequest;
+import com.snippet.gig.service.email.IEmailService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,14 +26,21 @@ import java.util.Optional;
 
 @Service
 public class ProjectService implements IProjectService {
+    private final IEmailService emailService;
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final TaskRepository taskRepository;
 
     @Autowired
-    public ProjectService(ProjectRepository projectRepository, UserRepository userRepository, ModelMapper modelMapper,
-                          TaskRepository taskRepository) {
+    public ProjectService(
+            IEmailService emailService,
+            ProjectRepository projectRepository,
+            UserRepository userRepository,
+            ModelMapper modelMapper,
+            TaskRepository taskRepository
+    ) {
+        this.emailService = emailService;
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
@@ -82,6 +91,19 @@ public class ProjectService implements IProjectService {
                                 existingproject.setEndDate(request.getEndDate());
                             }
 
+                            SendEmailRequest sendEmailRequest = new SendEmailRequest();
+
+                            // send email to all users associated with the project
+                            for (User user : existingproject.getUsers()) {
+                                sendEmailRequest.setTo(user.getEmail());
+                                sendEmailRequest.setSubject("Project Updated");
+                                sendEmailRequest.setBody("The project '" + existingproject.getName() + "' has been updated.\n" +
+                                        "Description: " + existingproject.getDescription() + "\n" +
+                                        "Start Date: " + existingproject.getStartDate() + "\n" +
+                                        "End Date: " + existingproject.getEndDate());
+                                emailService.sendEmail(sendEmailRequest);
+                            }
+
                             projectRepository.save(existingproject);
                         }, () -> {
                             throw new ResourceNotFoundException("This project does not exists");
@@ -91,7 +113,17 @@ public class ProjectService implements IProjectService {
     @Override
     public void deleteProject(Long id) throws ResourceNotFoundException {
         projectRepository.findById(id).ifPresentOrElse(project -> {
+                    SendEmailRequest sendEmailRequest = new SendEmailRequest();
 //                    userRepository.setProjectIdNull(id);
+                    // send email to all users associated with the project
+                    for (User user : project.getUsers()) {
+                        sendEmailRequest.setTo(user.getEmail());
+                        sendEmailRequest.setSubject("Project Deleted");
+                        sendEmailRequest.setBody("The project '" + project.getName() + "' has been shut down.");
+                        emailService.sendEmail(sendEmailRequest);
+                    }
+
+                    // Clear the users associated with the project before deletion
                     project.setUsers(null);
                     projectRepository.save(project);
                     taskRepository.deleteProjectTasks(id);
@@ -160,6 +192,16 @@ public class ProjectService implements IProjectService {
                                         project.addUser(user);
                                         projectRepository.save(project);
                                         userRepository.save(user);
+
+                                        // sending email notification
+                                        emailService.sendEmail(
+                                                new SendEmailRequest(
+                                                        user.getEmail(),
+                                                        "Project Assigned",
+                                                        "You have been assigned to the project: " + project.getName() +
+                                                                ".\nDescription: " + project.getDescription() + "\nStart Date: " +
+                                                                project.getStartDate() + "\nEnd Date: " + project.getEndDate()
+                                                ));
                                     }, () -> {
                                         throw new ResourceNotFoundException("This user does not exist");
                                     });

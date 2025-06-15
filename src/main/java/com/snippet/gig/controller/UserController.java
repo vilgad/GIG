@@ -53,7 +53,7 @@ public class UserController {
         UserDto userDto = userService.convertUserToDto(user);
         return ResponseEntity.ok(
                 new ApiResponse(
-                        "Create User Success!",
+                        "Create User Success! user will receive an email with login credentials",
                         userDto
                 ));
     }
@@ -80,7 +80,7 @@ public class UserController {
         userService.deleteUser(userId);
         return ResponseEntity.ok(
                 new ApiResponse(
-                        "Delete User Success!",
+                        "Delete User Success! User will receive an email with account deletion confirmation",
                         null
                 ));
     }
@@ -217,7 +217,7 @@ public class UserController {
 
         return ResponseEntity.ok(
                 new ApiResponse(
-                        "Password changed Successfully",
+                        "Password changed Successfully! User will receive an email with confirmation",
                         null
                 ));
     }

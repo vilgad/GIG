@@ -14,7 +14,9 @@ import com.snippet.gig.repository.ProjectRepository;
 import com.snippet.gig.repository.TaskRepository;
 import com.snippet.gig.repository.UserRepository;
 import com.snippet.gig.requestDto.CreateTaskRequest;
+import com.snippet.gig.requestDto.SendEmailRequest;
 import com.snippet.gig.requestDto.UpdateTaskRequest;
+import com.snippet.gig.service.email.IEmailService;
 import com.snippet.gig.service.user.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import java.util.List;
 
 @Service
 public class TaskService implements ITaskService {
+    private final IEmailService emailService;
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
@@ -32,12 +35,13 @@ public class TaskService implements ITaskService {
 
     @Autowired
     public TaskService(
-            TaskRepository taskRepository,
+            IEmailService emailService, TaskRepository taskRepository,
             UserRepository userRepository,
             ProjectRepository projectRepository,
             UserService userService,
             ModelMapper modelMapper
     ) {
+        this.emailService = emailService;
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
         this.projectRepository = projectRepository;
@@ -179,6 +183,14 @@ public class TaskService implements ITaskService {
                             } else {
                                 user.addTask(t);
                                 userRepository.save(user);
+
+                                // sending email notification
+                                SendEmailRequest request = new SendEmailRequest();
+                                request.setTo(user.getEmail());
+                                request.setSubject(t.getTitle() + " Task Assigned");
+                                request.setBody("You have been assigned a new task: " + t.getTitle() +
+                                        ". Please check your task list for details.");
+                                emailService.sendEmail(request);
                             }
                         },
                         () -> {
