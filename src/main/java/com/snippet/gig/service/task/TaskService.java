@@ -1,7 +1,6 @@
 package com.snippet.gig.service.task;
 
 import com.snippet.gig.dto.TaskDto;
-import com.snippet.gig.entity.Comment;
 import com.snippet.gig.entity.Project;
 import com.snippet.gig.entity.Task;
 import com.snippet.gig.entity.User;
@@ -22,6 +21,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -54,6 +54,7 @@ public class TaskService implements ITaskService {
         Task task = new Task();
         task.setTitle(request.getTitle());
         task.setDescription(request.getDescription());
+        task.setCreatedAt(LocalDateTime.now());
         task.setDueDate(request.getDueDate());
         task.setPriority(Priority.fromValue(request.getPriority().getValue()));
         task.setStatus(Status.fromValue("to do"));
@@ -72,6 +73,9 @@ public class TaskService implements ITaskService {
                     }
 
                     if (request.getStatus() != null) {
+                        if (request.getStatus().getValue().equalsIgnoreCase("completed"))
+                            t.setCompletedAt(LocalDateTime.now());
+
                         t.setStatus(Status.fromValue(request.getStatus().getValue()));
                     }
 
@@ -141,6 +145,9 @@ public class TaskService implements ITaskService {
         taskRepository.findById(taskId).ifPresentOrElse(task -> {
             if (!status.equals("to do")) {
                 if (task.getProject() != null) {
+                    if (status.equals("completed"))
+                        task.setCompletedAt(LocalDateTime.now());
+
                     task.setStatus(Status.fromValue(status));
                     taskRepository.save(task);
                 } else {

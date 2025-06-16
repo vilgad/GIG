@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +27,14 @@ public class Task {
 
     private String title;
     private String description;
+
+    // TODO - Uncomment the following line if you want to use createdAt field
+//    @Column(name = "created_at", updatable = false, nullable = false)
+    private LocalDateTime createdAt;
+    // TODO - Uncomment the following line if you want to use createdAt field
+//    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDate dueDate;
+    private LocalDateTime completedAt;
 
     @Enumerated(EnumType.STRING)
     private Status status;

@@ -5,6 +5,7 @@ import com.snippet.gig.enums.Status;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @ToString
 @Getter
@@ -16,6 +17,8 @@ public class TaskDto {
     private String title;
     private String description;
     private LocalDate dueDate;
+    private LocalDateTime createdAt;
+    private LocalDateTime completedAt;
     private Priority priority;
     private Status status;
 }
