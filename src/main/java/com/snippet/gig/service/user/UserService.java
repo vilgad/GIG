@@ -9,6 +9,7 @@ import com.snippet.gig.enums.Status;
 import com.snippet.gig.exception.AlreadyExistsException;
 import com.snippet.gig.exception.BadRequestException;
 import com.snippet.gig.exception.ResourceNotFoundException;
+import com.snippet.gig.pojo.Result;
 import com.snippet.gig.repository.RoleRepository;
 import com.snippet.gig.repository.TaskRepository;
 import com.snippet.gig.repository.UserRepository;
@@ -17,6 +18,7 @@ import com.snippet.gig.requestDto.CreateUserRequest;
 import com.snippet.gig.requestDto.SendEmailRequest;
 import com.snippet.gig.requestDto.UpdateUserRequest;
 import com.snippet.gig.service.email.IEmailService;
+import com.snippet.gig.service.telegram.ITelegramService;
 import com.snippet.gig.utils.UserDetail;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,7 @@ import java.util.Optional;
 @Service
 public class UserService implements IUserService {
     private final IEmailService emailService;
+    private final ITelegramService telegramService;
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final TaskRepository taskRepository;
@@ -41,9 +44,10 @@ public class UserService implements IUserService {
     private final RoleRepository roleRepository;
 
     @Autowired
-    public UserService(IEmailService emailService, UserRepository userRepository, ModelMapper modelMapper,
+    public UserService(IEmailService emailService, ITelegramService telegramService, UserRepository userRepository, ModelMapper modelMapper,
                        TaskRepository taskRepository, RoleRepository roleRepository) {
         this.emailService = emailService;
+        this.telegramService = telegramService;
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.taskRepository = taskRepository;
@@ -275,6 +279,29 @@ public class UserService implements IUserService {
         }
 
         return mentionedComments;
+    }
+
+    @Override
+    public User updateTelegramChatId(String username) throws ResourceNotFoundException, AlreadyExistsException {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User with username: " + username + " not found"));
+
+        if (user.getTelegramChatId() != null) {
+            throw new AlreadyExistsException("Telegram chat ID already exists for this user");
+        }
+
+        for (Result result : telegramService.getTelegramResponse().result()) {
+            if (user.getTelegramUsername().equals(
+                    result.message().chat().username()
+            )) {
+                user.setTelegramChatId(
+                        result.message().chat().id()
+                );
+                break;
+            }
+        }
+
+        return userRepository.save(user);
     }
 
     @Override

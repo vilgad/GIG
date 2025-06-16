@@ -60,4 +60,6 @@ public interface IUserService extends UserDetailsService {
     Map<Status, List<Task>> getKanbanBoard(Long userId) throws ResourceNotFoundException;
 
     List<Comment> getMentionedComments(String username) throws ResourceNotFoundException;
+
+    User updateTelegramChatId(String username) throws ResourceNotFoundException, AlreadyExistsException;
 }

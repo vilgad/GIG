@@ -72,6 +72,20 @@ public class UserController {
                 ));
     }
 
+    @PreAuthorize("hasAnyRole('MANAGER','ADMIN','USER')")
+    @PutMapping("/private/update-telegram-chat-id")
+    public ResponseEntity<ApiResponse> updateTelegramChatId(
+            @RequestParam String username
+    ) {
+        User user = userService.updateTelegramChatId(username);
+
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        "Telegram chat id updated Successfully!",
+                        user
+                ));
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/private/delete-user")
     public ResponseEntity<ApiResponse> deleteUser(
