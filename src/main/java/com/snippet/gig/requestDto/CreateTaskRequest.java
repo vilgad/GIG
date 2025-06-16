@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @ToString
 @NoArgsConstructor
@@ -21,7 +22,7 @@ public class CreateTaskRequest {
 
     @NotNull(message = "dueDate cannot be null")
     @NotEmpty(message = "dueDate cannot be empty")
-    private LocalDate dueDate;
+    private LocalDateTime dueDate;
 
     private Priority priority;
 }

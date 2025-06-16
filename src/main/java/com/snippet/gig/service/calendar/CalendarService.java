@@ -58,7 +58,7 @@ public class CalendarService implements ICalendarService {
 
             log.info("Adding task to calendar: {}", task.getTitle());
 
-            LocalDateTime start = task.getDueDate().atTime(10, 0);
+            LocalDateTime start = task.getDueDate();
             LocalDateTime end = start.plusHours(1);
 
             VEvent event = new VEvent(

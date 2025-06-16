@@ -5,6 +5,7 @@ import com.snippet.gig.enums.Status;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @ToString
 @NoArgsConstructor
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 public class UpdateTaskRequest {
     private String title;
     private String description;
-    private LocalDate dueDate;
+    private LocalDateTime dueDate;
     private Priority priority;
     private Status status;
 }

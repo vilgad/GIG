@@ -33,7 +33,7 @@ public class Task {
     private LocalDateTime createdAt;
     // TODO - Uncomment the following line if you want to use createdAt field
 //    @Column(name = "created_at", updatable = false, nullable = false)
-    private LocalDate dueDate;
+    private LocalDateTime dueDate;
     private LocalDateTime completedAt;
 
     @Enumerated(EnumType.STRING)
@@ -62,7 +62,7 @@ public class Task {
         return project != null ? project.getName() : null;
     }
 
-    public Task(String title, String description, LocalDate dueDate, Priority priority, Status status) {
+    public Task(String title, String description, LocalDateTime dueDate, Priority priority, Status status) {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
