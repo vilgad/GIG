@@ -39,6 +39,12 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+    // TODO (uncomment this)
+//    @Column(unique = true, nullable = false)
+    private String telegramUsername;
+
+    private Long telegramChatId;
+
     @ToString.Exclude
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})

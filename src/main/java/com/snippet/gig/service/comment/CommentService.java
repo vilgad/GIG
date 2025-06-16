@@ -11,6 +11,7 @@ import com.snippet.gig.repository.UserRepository;
 import com.snippet.gig.requestDto.CreateCommentRequest;
 import com.snippet.gig.requestDto.SendEmailRequest;
 import com.snippet.gig.service.email.EmailService;
+import com.snippet.gig.service.telegram.TelegramService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -22,12 +23,14 @@ public class CommentService implements ICommentService {
     private final UserRepository userRepository;
     private final TaskRepository taskRepository;
     private final EmailService emailService;
+    private final TelegramService telegramService;
 
-    public CommentService(CommentRepository commentRepository, UserRepository userRepository, TaskRepository taskRepository, EmailService emailService) {
+    public CommentService(CommentRepository commentRepository, UserRepository userRepository, TaskRepository taskRepository, EmailService emailService, TelegramService telegramService) {
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.taskRepository = taskRepository;
         this.emailService = emailService;
+        this.telegramService = telegramService;
     }
 
     @Override
@@ -61,15 +64,21 @@ public class CommentService implements ICommentService {
 
                 userRepository.save(mentionedUser);
 
-                SendEmailRequest mailRequest = new SendEmailRequest();
-                mailRequest.setTo(mentionedUser.getEmail());
-                mailRequest.setSubject("You were mentioned in a comment");
-                mailRequest.setBody("Hello " + mentionedUser.getUsername() + ",\n\n" +
+                String sendingMsg = "Hello " + mentionedUser.getUsername() + ",\n\n" +
                         "You were mentioned in a comment by " + user.getUsername() + " on task: " + task.getTitle() + ".\n\n" +
                         "Comment: " + comment.getContent() + "\n\n" +
                         "Best regards,\n" +
-                        "The Gig Team");
+                        "The Gig Team";
+                SendEmailRequest mailRequest = new SendEmailRequest();
+                mailRequest.setTo(mentionedUser.getEmail());
+                mailRequest.setSubject("You were mentioned in a comment");
+                mailRequest.setBody(sendingMsg);
                 emailService.sendEmail(mailRequest);
+
+                // telegram bot notification can be added here if needed
+                if (mentionedUser.getTelegramChatId() != null) {
+                    telegramService.sendMessage(mentionedUser.getTelegramChatId(), sendingMsg);
+                }
             }
         }
 

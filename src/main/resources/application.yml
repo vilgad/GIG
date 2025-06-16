@@ -20,7 +20,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: youractual.address@gmail.com
-    password: xxxx xxxx xxxx xxxx # Replace with your actual password
+    password: xxxxx xxxxx xxxxx # Replace with your actual password
     properties:
       mail:
         smtp:
@@ -31,6 +31,10 @@ spring:
             trust: smtp.gmail.com
         transport:
           protocol: smtp
+
+telegram:
+  bot:
+    token: xxxxx xxxxx xxxxx # Replace with your actual bot token
 
 springdoc:
   api-docs:
