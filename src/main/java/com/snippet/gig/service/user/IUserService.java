@@ -58,4 +58,6 @@ public interface IUserService extends UserDetailsService {
     List<Project> getUserProjects(Long userId) throws ResourceNotFoundException;
 
     Map<Status, List<Task>> getKanbanBoard(Long userId) throws ResourceNotFoundException;
+
+    List<Comment> getMentionedComments(String username) throws ResourceNotFoundException;
 }

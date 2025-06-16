@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,6 +24,7 @@ public class CreateCommentRequest {
     private String username;
 
     private Long parentCommentId;
+    private List<String> mentionedUsers = new ArrayList<>();
 }
 
 

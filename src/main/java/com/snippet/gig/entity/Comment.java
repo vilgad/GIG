@@ -46,6 +46,10 @@ public class Comment {
     @ToString.Exclude
     private List<Comment> replies = new ArrayList<>();
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ManyToMany
+    private List<User> mentionedUsers = new ArrayList<>();
+
     public String getUsername() {
         return user != null ? user.getUsername() : null;
     }

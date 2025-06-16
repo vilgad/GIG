@@ -72,7 +72,12 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany
     @ToString.Exclude
-    List<Comment> comments = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ManyToMany(mappedBy = "mentionedUsers", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ToString.Exclude
+    private List<Comment> mentionedComments = new ArrayList<>();
 
     public User(String name, LocalDate dob, String username, String email, String password) {
         this.name = name;

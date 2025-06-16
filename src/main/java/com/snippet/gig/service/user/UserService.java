@@ -1,6 +1,7 @@
 package com.snippet.gig.service.user;
 
 import com.snippet.gig.dto.UserDto;
+import com.snippet.gig.entity.Comment;
 import com.snippet.gig.entity.Project;
 import com.snippet.gig.entity.Task;
 import com.snippet.gig.entity.User;
@@ -260,6 +261,20 @@ public class UserService implements IUserService {
         }
 
         return kanbanBoard;
+    }
+
+    @Override
+    public List<Comment> getMentionedComments(String username) throws ResourceNotFoundException {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User with username: " + username + " not found"));
+
+        List<Comment> mentionedComments = user.getMentionedComments();
+
+        if (mentionedComments.isEmpty()) {
+            throw new ResourceNotFoundException("No mentioned comments found for user: " + username);
+        }
+
+        return mentionedComments;
     }
 
     @Override

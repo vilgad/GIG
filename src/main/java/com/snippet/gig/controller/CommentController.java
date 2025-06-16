@@ -1,6 +1,7 @@
 package com.snippet.gig.controller;
 
 import com.snippet.gig.entity.Comment;
+import com.snippet.gig.entity.User;
 import com.snippet.gig.requestDto.CreateCommentRequest;
 import com.snippet.gig.response.ApiResponse;
 import com.snippet.gig.service.comment.ICommentService;
@@ -31,6 +32,18 @@ public class CommentController {
                 new ApiResponse(
                         "comment Created Successfully",
                         comment
+                ));
+    }
+
+    @GetMapping("/public/get-mentioned-users")
+    public ResponseEntity<ApiResponse> getMentionedUsers(
+            @RequestParam Long commentId
+    ) {
+        List<User> users = commentService.getMentionedUsers(commentId);
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        "comment Created Successfully",
+                        users
                 ));
     }
 

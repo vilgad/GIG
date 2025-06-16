@@ -1,6 +1,7 @@
 package com.snippet.gig.service.comment;
 
 import com.snippet.gig.entity.Comment;
+import com.snippet.gig.entity.User;
 import com.snippet.gig.exception.ResourceNotFoundException;
 import com.snippet.gig.requestDto.CreateCommentRequest;
 
@@ -14,6 +15,8 @@ public interface ICommentService {
     List<Comment> getTaskComments(Long taskId) throws ResourceNotFoundException;
 
     List<Comment> getUserComments(String username) throws ResourceNotFoundException;
+
+    List<User> getMentionedUsers(Long commentId);
 
 //    TODO(Implement Comment Service)
     // basic crud operations

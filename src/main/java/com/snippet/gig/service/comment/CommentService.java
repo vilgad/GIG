@@ -41,6 +41,20 @@ public class CommentService implements ICommentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + request.getTaskId()));
         comment.setTask(task);
 
+
+        commentRepository.save(comment);
+
+        if (request.getMentionedUsers() != null) {
+            for (String mentionedUsername : request.getMentionedUsers()) {
+                User mentionedUser = userRepository.findByUsername(mentionedUsername)
+                        .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + mentionedUsername));
+                comment.getMentionedUsers().add(mentionedUser);
+                mentionedUser.getMentionedComments().add(comment);
+
+                userRepository.save(mentionedUser);
+            }
+        }
+
         commentRepository.save(comment);
 
         if (request.getParentCommentId() != null) {
@@ -90,5 +104,18 @@ public class CommentService implements ICommentService {
         }
 
         return comments;
+    }
+
+    @Override
+    public List<User> getMentionedUsers(Long commentId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new ResourceNotFoundException("Comment not found with id: " + commentId)
+        );
+
+        if (comment.getMentionedUsers().isEmpty()) {
+            throw new ResourceNotFoundException("No mentioned users found for comment with id: " + commentId);
+        }
+
+        return comment.getMentionedUsers();
     }
 }

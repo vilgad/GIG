@@ -221,4 +221,16 @@ public class UserController {
                         null
                 ));
     }
+
+    @GetMapping("/public/get-mentioned-comments")
+    public ResponseEntity<ApiResponse> getMentionedComments(
+            @RequestParam String username
+    ) {
+        List<Comment> comments = userService.getMentionedComments(username);
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        "comment Created Successfully",
+                        comments
+                ));
+    }
 }
