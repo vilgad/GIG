@@ -3,11 +3,14 @@ package com.snippet.gig.service.comment;
 import com.snippet.gig.entity.Comment;
 import com.snippet.gig.entity.Task;
 import com.snippet.gig.entity.User;
+import com.snippet.gig.exception.BadRequestException;
 import com.snippet.gig.exception.ResourceNotFoundException;
 import com.snippet.gig.repository.CommentRepository;
 import com.snippet.gig.repository.TaskRepository;
 import com.snippet.gig.repository.UserRepository;
 import com.snippet.gig.requestDto.CreateCommentRequest;
+import com.snippet.gig.requestDto.SendEmailRequest;
+import com.snippet.gig.service.email.EmailService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -18,11 +21,13 @@ public class CommentService implements ICommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final TaskRepository taskRepository;
+    private final EmailService emailService;
 
-    public CommentService(CommentRepository commentRepository, UserRepository userRepository, TaskRepository taskRepository) {
+    public CommentService(CommentRepository commentRepository, UserRepository userRepository, TaskRepository taskRepository, EmailService emailService) {
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.taskRepository = taskRepository;
+        this.emailService = emailService;
     }
 
     @Override
@@ -46,12 +51,25 @@ public class CommentService implements ICommentService {
 
         if (request.getMentionedUsers() != null) {
             for (String mentionedUsername : request.getMentionedUsers()) {
+                if (mentionedUsername.equals(user.getUsername()))
+                    throw new BadRequestException("Cannot mention yourself in a comment");
+
                 User mentionedUser = userRepository.findByUsername(mentionedUsername)
                         .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + mentionedUsername));
                 comment.getMentionedUsers().add(mentionedUser);
                 mentionedUser.getMentionedComments().add(comment);
 
                 userRepository.save(mentionedUser);
+
+                SendEmailRequest mailRequest = new SendEmailRequest();
+                mailRequest.setTo(mentionedUser.getEmail());
+                mailRequest.setSubject("You were mentioned in a comment");
+                mailRequest.setBody("Hello " + mentionedUser.getUsername() + ",\n\n" +
+                        "You were mentioned in a comment by " + user.getUsername() + " on task: " + task.getTitle() + ".\n\n" +
+                        "Comment: " + comment.getContent() + "\n\n" +
+                        "Best regards,\n" +
+                        "The Gig Team");
+                emailService.sendEmail(mailRequest);
             }
         }
 
